@@ -1,3 +1,3 @@
-# DSH Memory 1.0.2
+# DSH Memory 1.0.3
 
-All newer valid versions now install automatically, including major upgrades and switches between preview and stable. The newest valid release across both feeds wins; downgrades remain blocked. Silent checks, inline status and no update popups remain in place, together with archive verification and host-managed installation receipts.
+Adds Gitee and GitCode update sources. Concurrent checks select the newest valid version, prefer regional downloads and fall back on failure. Conflicting hashes, sizes or build IDs block installation. All newer channels and major versions remain automatic, without popups. Mirrors can lag; an unavailable source does not prevent use of other valid sources.

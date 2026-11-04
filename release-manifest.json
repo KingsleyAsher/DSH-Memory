@@ -1,11 +1,11 @@
 {
-  "version": "1.0.2",
+  "version": "1.0.3",
   "package": "@local/dsh-memory",
-  "archive": "dist/local-dsh-memory-1.0.2.tgz",
-  "tgz": "local-dsh-memory-1.0.2.tgz",
-  "buildId": "3d97b17ba7d17802",
-  "sha256": "3569dc745236da09b1ea499f5d6653ea4b92d47f16ac0de89e564989a1fc3e8f",
-  "bytes": 251322,
+  "archive": "dist/local-dsh-memory-1.0.3.tgz",
+  "tgz": "local-dsh-memory-1.0.3.tgz",
+  "buildId": "d77c1ebc19f44cae",
+  "sha256": "81e5b0a69b994852826cd3db19e5bb5777b1bde8aef3089509ea4e718b81763c",
+  "bytes": 252007,
   "files": 76,
   "verification": {
     "syntheticTestsPassed": 8,
@@ -15,6 +15,6 @@
     "liveModelCalls": false,
     "privateUserDataUsed": false,
     "installedHostUpgradeTested": false,
-    "updaterTestsPassed": 4
+    "updaterTestsPassed": 6
   }
 }

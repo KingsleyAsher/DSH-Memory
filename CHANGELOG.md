@@ -1,5 +1,10 @@
 # Changelog / 版本记录
 
+## 1.0.3 — 2026-11-04
+
+- 新增 Gitee、GitCode 更新源，保持全版本自动更新与无弹窗。
+- Added Gitee/GitCode sources with newest-version selection, regional preference, conflict checks and download fallback.
+
 ## 1.0.2 — 2026-11-04
 
 - 所有较新正式版、预览版和跨主版本更新均自动安装，无需手动选择。

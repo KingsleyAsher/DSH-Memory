@@ -29,6 +29,12 @@ export function compareReleaseVersions(a, b) {
 const REPO_PATH = 'KingsleyAsher/DSH-Memory'
 const MAX_UPDATE_BYTES = 16 * 1024 * 1024
 export const UPDATE_SOURCES = Object.freeze([
+  { id: 'gitee', name: 'Gitee', repository: 'https://gitee.com/' + REPO_PATH,
+    file: rel => 'https://gitee.com/' + REPO_PATH + '/raw/main/' + rel,
+    hosts: ['gitee.com', 'raw.giteeusercontent.com'] },
+  { id: 'gitcode', name: 'GitCode', repository: 'https://gitcode.com/' + REPO_PATH,
+    file: rel => 'https://api.gitcode.com/api/v5/repos/' + REPO_PATH + '/raw/' + rel + '?ref=main',
+    hosts: ['api.gitcode.com', 'raw.gitcode.com', 'gitcode.com'] },
   { id: 'github', name: 'GitHub', repository: UPDATE_REPOSITORY,
     file: rel => 'https://raw.githubusercontent.com/' + REPO_PATH + '/main/' + rel,
     hosts: ['raw.githubusercontent.com'] },
