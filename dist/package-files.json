@@ -1,0 +1,362 @@
+[
+  {
+    "path": "CHANGELOG.md",
+    "sha256": "a43b20df993ca0aba0a6cec99000b6fe3dfe5c476e7ff9c01c16d04179086db7",
+    "bytes": 1049
+  },
+  {
+    "path": "GUIDE.en.md",
+    "sha256": "e917a5b68d714300f3936a389dc1168e75f76f8fd350927c66edd17cf79adf63",
+    "bytes": 4417
+  },
+  {
+    "path": "GUIDE.zh-CN.md",
+    "sha256": "71c574f35b9dcc96e52b150926555942b3490e6e2a725d6194bebca6409279c9",
+    "bytes": 4425
+  },
+  {
+    "path": "LICENSE",
+    "sha256": "b3f3dc46b983c60a02a0dc8d836b924187e2cedce324e9761dd95b9ba8be0b8b",
+    "bytes": 1091
+  },
+  {
+    "path": "PROJECT-RECORD.en.md",
+    "sha256": "0d636e15c0e79943f67618e4bf1c87069d6e65b82959800500864ecfa7e5813a",
+    "bytes": 2869
+  },
+  {
+    "path": "PROJECT-RECORD.zh-CN.md",
+    "sha256": "cf66337f6fd730149cdca8538b4c2744579bfc284928fa22f4505becb9e467db",
+    "bytes": 2587
+  },
+  {
+    "path": "PUBLICATION.md",
+    "sha256": "8226402a51f55788130649aec0ef483aca8dac2343c8b3684cb1cddacc8d7e09",
+    "bytes": 1709
+  },
+  {
+    "path": "README.md",
+    "sha256": "b1f42fb936db4f5d2015f7493c7c6ac79ae72dfb93dd839a09fe3ff7988aeb97",
+    "bytes": 4843
+  },
+  {
+    "path": "README.zh-CN.md",
+    "sha256": "624a4d9a391e83af25985015141dfc11f3a763a6ebb8d89923584e463284ccda",
+    "bytes": 4546
+  },
+  {
+    "path": "RELEASE.en.md",
+    "sha256": "2acfdc7f5ab75cbe52dace89ff089811d1ef61ff36f2eb07aba53cb4c26e736e",
+    "bytes": 1362
+  },
+  {
+    "path": "RELEASE.zh-CN.md",
+    "sha256": "eba7599fcc30fbfb79555460581f142bc521b5090f70d599e1f9edc0709d2be2",
+    "bytes": 1226
+  },
+  {
+    "path": "cordis.patch.yml",
+    "sha256": "4e0ccf79b7825da3a5b250786e677de9c068cdcd9e590d58f03debc242993285",
+    "bytes": 776
+  },
+  {
+    "path": "package.json",
+    "sha256": "2c8c9da41c2247602b33b27ed3d64b34639bd5bc7ef75703bcbe0f4068cc3178",
+    "bytes": 1272
+  },
+  {
+    "path": "python/memory_core/__init__.py",
+    "sha256": "e4f5dacda84d34890846770007f1baea36d39abcbc3b80b9629a68a3d3a222a6",
+    "bytes": 104
+  },
+  {
+    "path": "python/memory_core/__main__.py",
+    "sha256": "cf7390a2508a0fcad4777a4a629fc5212ab655cb45845975995f835676a834e3",
+    "bytes": 29
+  },
+  {
+    "path": "python/memory_core/admission.py",
+    "sha256": "b6b5577a4898e137deb14c86e5b014a95ee0813d1fca5986074312c8a21b984e",
+    "bytes": 6095
+  },
+  {
+    "path": "python/memory_core/answering.py",
+    "sha256": "1f868cb9e002733b114031993eda38b4ed3618e5c42d9a3e2bb875013a0444ba",
+    "bytes": 17547
+  },
+  {
+    "path": "python/memory_core/atomic_consolidation.py",
+    "sha256": "72236c828d2ce1771c93c5b47356b9f43f6ae7fc6d845473450b082040e6096d",
+    "bytes": 20735
+  },
+  {
+    "path": "python/memory_core/atomic_wire.py",
+    "sha256": "bf5d79609c9013bdfcf4dc7390f5a137c82dc90a5b01edce5286c5386c660073",
+    "bytes": 18144
+  },
+  {
+    "path": "python/memory_core/atoms.py",
+    "sha256": "4e22647e32fdeba367961de85771006a6e4b23f269a8e68dba78b26489297c44",
+    "bytes": 12384
+  },
+  {
+    "path": "python/memory_core/claim_store.py",
+    "sha256": "0e4363c31d7663034f3048775a317cf56b780bff3360dde7380eacba984b1098",
+    "bytes": 32845
+  },
+  {
+    "path": "python/memory_core/cli.py",
+    "sha256": "5190492503117106dccd1d63c3c8cde54f0a3976998385b040f794b8b4103573",
+    "bytes": 4702
+  },
+  {
+    "path": "python/memory_core/compact_wire.py",
+    "sha256": "8584558d7584acfd3deb060da055c9a2623a7959c76bdab5929327df21dd30ec",
+    "bytes": 10422
+  },
+  {
+    "path": "python/memory_core/consolidation.py",
+    "sha256": "e327183763e4d8279416eba91a86605486887bfad334ec8aad27aeba1c312bca",
+    "bytes": 29149
+  },
+  {
+    "path": "python/memory_core/contextual.py",
+    "sha256": "a403efa45fb2b8f8c5cc88951a0dc8fa6c88eb1c9b6d107e150b948fac87078d",
+    "bytes": 4688
+  },
+  {
+    "path": "python/memory_core/contract.py",
+    "sha256": "7b57c416cfaa28cc5aaa8d1a6efba6ca8939d2c6ae0aaee2944f100439204ed2",
+    "bytes": 7188
+  },
+  {
+    "path": "python/memory_core/coverage.py",
+    "sha256": "1a11ffdf29a126a0fd717d07943bf37f524480ff689750caff4b33c422ef52ae",
+    "bytes": 1660
+  },
+  {
+    "path": "python/memory_core/decision.py",
+    "sha256": "3c7d25441f33cb085d58bbaa38417d1f1a1c375cc6d0c02c0fb77c6dde22c06a",
+    "bytes": 1345
+  },
+  {
+    "path": "python/memory_core/embed.mjs",
+    "sha256": "8a6d7bb2203134dd91c83589a96952e60e76fc82ca2493d067731bc62b91f4b6",
+    "bytes": 1562
+  },
+  {
+    "path": "python/memory_core/event_identity.py",
+    "sha256": "6820c6be3b0f267b9d6e824aa984bd062788d4492bd87d993ac62a5463b918ec",
+    "bytes": 27520
+  },
+  {
+    "path": "python/memory_core/extraction.py",
+    "sha256": "eec28d87a68da970152f87045cc9191e1ec9a6091a23038d82d2adcf3521fff4",
+    "bytes": 12848
+  },
+  {
+    "path": "python/memory_core/extraction_base.py",
+    "sha256": "56399546591e02456aaf7a8f30149f6c8fd048d42348082a2745029e2e880b0b",
+    "bytes": 15895
+  },
+  {
+    "path": "python/memory_core/grading.py",
+    "sha256": "305e1ad518aad405b26d5bcfbea97270fff5ff8f6725facf39668085f67c16ba",
+    "bytes": 13122
+  },
+  {
+    "path": "python/memory_core/grounding.py",
+    "sha256": "92d84b77243a17d61d00cb3124fd0eb8c5c5eada3af84855c07b8ef83e1a84ab",
+    "bytes": 3588
+  },
+  {
+    "path": "python/memory_core/identity.py",
+    "sha256": "cd58529ff8162952a6d2e0f6bf0e22ea3b40b3d0884f69b0568b08a1a85f78ca",
+    "bytes": 2484
+  },
+  {
+    "path": "python/memory_core/index.py",
+    "sha256": "10ce0e4040ce8ec227b08b0fc8fda243b28d7d8a18c1cd4e83d246419b948e59",
+    "bytes": 6817
+  },
+  {
+    "path": "python/memory_core/knowledge.py",
+    "sha256": "9e5d9d2327238932d52711048127468527028e812619be189724fb0e44fb840a",
+    "bytes": 1426
+  },
+  {
+    "path": "python/memory_core/legacy_answer.py",
+    "sha256": "78c87da02d420e4b5b48538c152038b6b327588482013e0962abf61c724e5f9e",
+    "bytes": 2658
+  },
+  {
+    "path": "python/memory_core/memory_flow.py",
+    "sha256": "ba5651ef10a5d4a26d19f8a6736dce22cba94e017704779299ea0851bd256c25",
+    "bytes": 20534
+  },
+  {
+    "path": "python/memory_core/memory_mcp.py",
+    "sha256": "ace0533f9cfad66b56537a7f459799566c6d302104b30a194790e529c10aca26",
+    "bytes": 2021
+  },
+  {
+    "path": "python/memory_core/ollama_client.py",
+    "sha256": "685698e9fdf64b6c9e4363a5bc13f658cbf1d3f0280e1e64bfe4f9839b5a77b9",
+    "bytes": 2746
+  },
+  {
+    "path": "python/memory_core/operation_consolidation.py",
+    "sha256": "c744f613f9a5484623d072d92e0ac07ee4f929e1085e2608222e952fff525b9d",
+    "bytes": 31146
+  },
+  {
+    "path": "python/memory_core/operation_recall.py",
+    "sha256": "8a2dd248beacd0e1bcbbe9ffdc5cc5bcca87bc1f3b09586b734f4ac8b5b9d5a1",
+    "bytes": 4215
+  },
+  {
+    "path": "python/memory_core/operation_wire.py",
+    "sha256": "fc91e90a1925a9d51c1e696514415f328d8a2b7a4bf0e1a6694fa6e8ff89918c",
+    "bytes": 11023
+  },
+  {
+    "path": "python/memory_core/planning.py",
+    "sha256": "82bed190dfa1e213ad8cd900c89f427a76f3b9cc13e5e1eb70ecbc9dbbc90070",
+    "bytes": 6073
+  },
+  {
+    "path": "python/memory_core/plugin_bridge.py",
+    "sha256": "bd34aabee5049678aca6904ebc62a1fd418dc2bb0e0fa46caff91f19a531e732",
+    "bytes": 10452
+  },
+  {
+    "path": "python/memory_core/plugin_scopes.py",
+    "sha256": "dd7832bd5c89a3d00b193a3fc138b599b8f5499eeb531a67b36b72f19e2a1aee",
+    "bytes": 16519
+  },
+  {
+    "path": "python/memory_core/policy.py",
+    "sha256": "48d1619d6f52508b1fc851963bb6b37e3c1cec5ca360de254a3c226f52b830a6",
+    "bytes": 4435
+  },
+  {
+    "path": "python/memory_core/providers.py",
+    "sha256": "4adf0fa676cf86b6f1f2ff5f294ff8f78aaef3acf10ff90c95ea361b24196cc9",
+    "bytes": 2447
+  },
+  {
+    "path": "python/memory_core/query_events.py",
+    "sha256": "79b1f56c6ae04f24c0cd7a547ea71e531bd58cecb8322c4f7757ad91b66f3c3e",
+    "bytes": 4860
+  },
+  {
+    "path": "python/memory_core/raw.py",
+    "sha256": "da885380b7b6e45420b8ec1e7a36528424e4179012c6315384a45fb7c87b2318",
+    "bytes": 15739
+  },
+  {
+    "path": "python/memory_core/relations.py",
+    "sha256": "258b621463089cb9fcfdce8977f8b0eaadfd12872c7cdc5a7f3a58617797b253",
+    "bytes": 2194
+  },
+  {
+    "path": "python/memory_core/reminders.py",
+    "sha256": "3440cf87b517fe78710f7faa4db6c4addbd9f1fdfead660ef272e754024ebc29",
+    "bytes": 14072
+  },
+  {
+    "path": "python/memory_core/runtime.py",
+    "sha256": "1873db9885d9fb85cf1bfa5e786ac4094c94368f78fdb0eb01584652b9f842ac",
+    "bytes": 21727
+  },
+  {
+    "path": "python/memory_core/selection.py",
+    "sha256": "818d45ede1058616b4568d5124abb00624504ccd488ab60f720ec666d1a1c117",
+    "bytes": 13615
+  },
+  {
+    "path": "python/memory_core/semantics.py",
+    "sha256": "8e2a3d2fea1043696783ae2a27c46173f99ff1f2d984abbeee19e6a657315f6b",
+    "bytes": 1798
+  },
+  {
+    "path": "python/memory_core/server.py",
+    "sha256": "80010cf863e1b69b91a88b017101c65a2fd541631a257c4852dab659e7599d23",
+    "bytes": 3363
+  },
+  {
+    "path": "python/memory_core/source_semantics.py",
+    "sha256": "2fa19aee5d11464de6e7ac1bdca690582c496deb6074d990a0d73cdc83fc1526",
+    "bytes": 6749
+  },
+  {
+    "path": "python/memory_core/state.py",
+    "sha256": "34ee220b451edb0bdeb249f7db6547d173ae5f43e96680b492dd98b7d418be18",
+    "bytes": 2418
+  },
+  {
+    "path": "python/memory_core/store.py",
+    "sha256": "df0371069283239058e2abd1054ce6e37220db89910a160f7e789f93ef47180e",
+    "bytes": 27003
+  },
+  {
+    "path": "python/memory_core/store_base.py",
+    "sha256": "d4017bbfd9a9c66c280cbc514cd49b108d0db1a06c00000ed8871d020b5b218b",
+    "bytes": 8482
+  },
+  {
+    "path": "python/memory_core/thresholds.py",
+    "sha256": "08921e75aa59bea098c64ad8a9456acef4b0d00a90b23e8d4316a86158e416ce",
+    "bytes": 8662
+  },
+  {
+    "path": "python/memory_core/tool_memory.py",
+    "sha256": "1ca93680afb592725f3872f1b31581f5f1997f229fb36b157b173f18b14b96c2",
+    "bytes": 21118
+  },
+  {
+    "path": "python/memory_core/tool_wire.py",
+    "sha256": "ad53488725eb252d92a1c5f1db6c8862ed2d9e2f4c4bcc87a44e4a43f5556c4b",
+    "bytes": 4849
+  },
+  {
+    "path": "python/memory_core/views.py",
+    "sha256": "098ce7ec6b0a3404f86d73ce33164ca5da6dea63df85cd788a010b904107d03a",
+    "bytes": 2052
+  },
+  {
+    "path": "src/bridge.js",
+    "sha256": "0e177724ad7dad38c074fb970213063001e52f9a88afcb5f269177e4ecc66ed4",
+    "bytes": 3079
+  },
+  {
+    "path": "src/client.js",
+    "sha256": "dfc4f09b12c7e0d965194e1bdc4a3859c679fa5bcadb5ffaa38eaf9a2bb77bd2",
+    "bytes": 120179
+  },
+  {
+    "path": "src/index.js",
+    "sha256": "cc350dc460da82ce02b46e57159b73eef80a18c788db6aba0deb9e15a9f5e927",
+    "bytes": 908
+  },
+  {
+    "path": "src/knowledge-memory.js",
+    "sha256": "1d6d33d338502996b343066287c1efccf9292d11c2fadc15cb6b54fceeb750e3",
+    "bytes": 3445
+  },
+  {
+    "path": "src/runtime.js",
+    "sha256": "8cd711c4f55b45cd8885df9fd7f2527c3a74a3be394476a0e1e5e8698bdd30a4",
+    "bytes": 12472
+  },
+  {
+    "path": "src/store.js",
+    "sha256": "7f3f9a88e969068df3afadb19c5b2f93b72ed6244babf8a24be964bb16554b6a",
+    "bytes": 5888
+  },
+  {
+    "path": "src/ui.js",
+    "sha256": "6e1a8da7f829ce3a218886ca11b6ba8a97d49bea38ed99fd38f1878fbc46e14d",
+    "bytes": 2857
+  }
+]

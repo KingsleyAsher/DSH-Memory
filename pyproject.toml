@@ -1,0 +1,16 @@
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "dsh-memory-core"
+version = "1.0.0"
+description = "Evidence-backed memory core for DeepSeek Harness"
+requires-python = ">=3.11"
+dependencies = ["numpy"]
+
+[tool.setuptools]
+packages = ["memory_core"]
+
+[tool.setuptools.package-data]
+memory_core = ["*.mjs"]

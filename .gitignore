@@ -147,3 +147,20 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# Private runtime and Python artifacts
+__pycache__/
+*.py[cod]
+*.sqlite*
+*.db
+*.db-*
+research/
+memory-beta-state/
+*.log
+
+# Explicit public release outputs
+!dist/
+dist/*
+!dist/local-dsh-memory-1.0.0.tgz
+!dist/SHA256SUMS
+!dist/package-files.json

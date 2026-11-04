@@ -1,0 +1,50 @@
+{
+  "name": "@local/dsh-memory",
+  "version": "1.0.0",
+  "description": "Long-term memory for DeepSeek Harness: evidence-backed capture, scoped recall, review and optional knowledge-base sharing.",
+  "type": "module",
+  "main": "./src/ui.js",
+  "exports": {
+    ".": "./src/ui.js",
+    "./store": "./src/store.js",
+    "./client": "./src/client.js",
+    "./package.json": "./package.json",
+    "./runtime": "./src/index.js"
+  },
+  "files": [
+    "src",
+    "python",
+    "cordis.patch.yml",
+    "README.md",
+    "LICENSE"
+  ],
+  "dsh": {
+    "bundle": {
+      "patch": "./cordis.patch.yml"
+    },
+    "client": {
+      "inject": [
+        "slots"
+      ],
+      "platform": "web"
+    }
+  },
+  "peerDependencies": {
+    "@deepseek-ai/cordis": "~4.0.5",
+    "@deepseek-ai/dsh": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-agent-preset": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-compaction-basic": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-tools": "0.2.1-rc.5",
+    "@deepseek-ai/dsh-llm": "0.2.1-rc.5"
+  },
+  "license": "MIT",
+  "private": false,
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/KingsleyAsher/DSH-Memory.git"
+  },
+  "homepage": "https://github.com/KingsleyAsher/DSH-Memory",
+  "bugs": {
+    "url": "https://github.com/KingsleyAsher/DSH-Memory/issues"
+  }
+}
