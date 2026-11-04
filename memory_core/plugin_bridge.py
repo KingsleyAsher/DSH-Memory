@@ -66,7 +66,7 @@ class PluginBridge:
             context=rows[lo:hi]
             prepared=self.flow.prepare(mode,session,source_ids=ids,context_ids=[r['id'] for r in context],
                                        history_refs={r['id']:r['message_id'] if message_ids is not None and r['message_id'] in set(message_ids) else None for r in context})
-            prepared['request']['system']+='\n每条f/p明确标l=global或project：跨项目稳定偏好、身份、通用约束才用global；当前项目的任务、路径、配置、进度、故障默认project。不明确用project。项目清理或切换后project会删除，global保留。'
+            prepared['request']['system']+='\n每条f/p明确标l=global或project：跨项目稳定偏好、身份、通用约束才用global；当前项目的任务、路径、配置、进度、故障默认project。不明确用project。所有Agent共享DSH记忆；切换预设或项目不删除。project仅随对应项目激活，global跨项目适用。'
             prepared['session']=session
             batches.append(prepared)
         return dict(batches=batches)
@@ -115,7 +115,7 @@ class PluginBridge:
             project=self.scopes.project_for(args.get('session',''),args['project'])
             result=self.core.query(args['question'],project=project,entity='workspace',answer=False)
             archive=self.scopes.evidence(project,args['question'])
-            managed={r[0] for r in self.db.execute("SELECT claim_id FROM plugin_memory_entries WHERE scope='global' OR origin IN ('manual','explicit') OR deleted=1")}
+            managed={r[0] for r in self.db.execute("SELECT claim_id FROM plugin_memory_entries")}
             candidates=archive+[dict(source_id=f['source_id'],value=f['value_text'],quote=f['quote'],scope='project',origin='automatic') for f in result.get('delivered',[]) if f['id'] not in managed]
             evidence=[]
             for candidate in candidates:

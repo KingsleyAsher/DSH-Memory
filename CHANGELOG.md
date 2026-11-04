@@ -1,5 +1,13 @@
 # Changelog / 版本记录
 
+## 1.0.4 — 2026-11-05
+
+- 新增详情页：运行版本、手动检查更新、各更新源状态及 GitHub/Gitee/GitCode 仓库链接；保留自动检查和安装。
+- 保存失败和部分保存明确返回工具错误；修复有唯一对应关系的原文句读差异和遗漏记录引用，保留原始响应。
+- 所有 Agent 预设共享全局/项目记忆。项目切换不删除记录，同项目旧窗口记录兼容共享；页面默认全局记忆。
+- Added plugin details and manual update checks without disabling automatic updates.
+- Made unsuccessful writes explicit and preserved project memory across navigation with shared same-project scopes.
+
 ## 1.0.3 — 2026-11-04
 
 - 新增 Gitee、GitCode 更新源，保持全版本自动更新与无弹窗。

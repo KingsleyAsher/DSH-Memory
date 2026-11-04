@@ -6,9 +6,9 @@ Install the dependencies and package described in the README, then enable the pl
 
 ## Scope lifecycle
 
-Global records cover preferences and constraints that apply across projects. Project records belong to the current window's project and can be used by its sessions. Switching or clearing that window's project deletes the corresponding project records, sources and derived views. Other windows retain their own project scopes. Keep permanent project archives as documents elsewhere.
+Global records apply across projects; project records activate only for their project. All Agent presets share the same DSH memory store. Switching a preset, window or project does not erase records. Explicit project clearing removes its records while preserving global memory. Legacy window identifiers for the same project remain accessible; unrelated projects stay isolated.
 
-The main model marks automatic records as global or project; ambiguous scope defaults to project. Global records retain a minimal independent evidence archive. Deletion is not a recoverable trash operation. A package upgrade does not itself erase storage, but normal project lifecycle rules still apply.
+For normal tool submissions the conversation model chooses global/project, defaulting to project when omitted. Explicit persistent instructions also have a deterministic phrase-based capture path. Manual additions use the selected scope. Source validation does not guarantee correct semantic scope classification. Adding a global record does not automatically merge a similar older project record. Deletion is not recoverable through a trash view.
 
 ## Management and review
 
@@ -43,3 +43,9 @@ The memory plugin operates independently when other components are absent. Insta
 - Old version after upgrade: exit the tray process and restart when requested; do not delete storage.
 
 Report versions, error text and a minimal synthetic reproduction. Do not upload private databases, conversation transcripts or credential-bearing configuration.
+
+## Details and updates
+
+Open Memory → Details for the running version, last check, published version, source status and all GitHub/Gitee/GitCode repository links. Manual checks share the automatic update flow: about 15 seconds after startup and every six hours, eligible updates are installed through the host manager. Offline checks do not hide local version information or falsely report that the current version is latest.
+
+A proactive write may only be confirmed when state=saved and can_confirm_saved=true. Unsuccessful and partial submissions fail the tool; use the per-item correction hints and a fresh batch. A completed transaction does not establish a saved memory. These guards do not guarantee every model's future wording.

@@ -1,4 +1,5 @@
 import {createUpdateChecker,createUpdateDownloader} from './updates.js';
+import {pluginDetails} from './details.js';
 import {readFileSync} from 'node:fs';
 import { Service } from '@deepseek-ai/cordis';
 import { resolve, isAbsolute } from 'node:path';
@@ -19,6 +20,7 @@ export async function handleMemoryRequest(bridge, request, updates) {
     const text = await request.text();
     if (text.length > 24000) return Response.json({ error: '输入过长' }, { status: 413 });
     const body = JSON.parse(text);
+    if(body.op==='details')return Response.json(updates.details);
     if(body.op?.startsWith('updates.')) {
       if(body.op==='updates.check')return Response.json(await updates.checker.check({force:!!body.args?.force}));
       if(body.op==='updates.prepare')return Response.json(await updates.downloader.prepare({expectedVersion:body.args?.expectedVersion}));
@@ -36,11 +38,12 @@ export async function handleMemoryRequest(bridge, request, updates) {
 export default class MemoryStore extends Service {
   constructor(ctx, config = {}) {
     super(ctx, 'memoryStore');
-    const currentVersion=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;
+    const packageInfo=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8'));
+    const currentVersion=packageInfo.version;
     const profile=ctx.get('profileContext');
     const checker=createUpdateChecker({currentVersion});
     const downloader=createUpdateDownloader({checker,cacheDir:profile?.dir?resolve(profile.dir,'.memory-plugin-updates'):null});
-    const updates={checker,downloader};
+    const updates={checker,downloader,details:pluginDetails(packageInfo)};
     // Cordis rejects undeclared service property reads, even before ?? fallback.
     // Use its optional lookup and a durable home-relative default.
     const stateDir = config.stateDir || resolve(ctx.get('baseDir') ?? resolve(process.env.DSH_HOME || resolve(homedir(), '.dsh'), 'storages'), 'memory-beta-state');

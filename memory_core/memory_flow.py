@@ -156,6 +156,31 @@ obligations是原文中容易漏掉的明确要求；保存这些限制的完整
         if not row or row['mode']!='active':raise ValueError('not_an_active_memory_tool_batch')
         return self.commit(arguments['batch_id'],arguments['memory'])
 
+    def _repair_literal_transport(self, item, source):
+        """Only restore the exact cited span when punctuation/spacing alone differs.
+
+        Never fuzzy-match words, digits, negation, symbols or linked assertions.
+        The original model response remains stored unchanged in the batch.
+        """
+        repairs=[]
+        def literal(s):
+            # Numeric punctuation and signs can change values (1.5, -1).
+            ignored='' if any(c.isdigit() for c in s) else '，,。；;！？!?'
+            return ''.join(c for c in s if not c.isspace() and c not in ignored)
+        for record in item.get('f',[]):
+            if not isinstance(record,dict) or not isinstance(record.get('v'),str):continue
+            quote=compact_wire._quote(source,record.get('e'))
+            if record['v'] not in quote and literal(record['v']) and literal(record['v'])==literal(quote):
+                record['v']=quote;repairs.append('restored_exact_cited_span')
+        # A single unbound assert and a single unbound record are unambiguous.
+        ops=item.get('o',[])
+        used={o.get('n') for o in ops if isinstance(o,dict)}
+        records=[k+str(i) for field,k in [('f','F'),('p','L')] for i,_ in enumerate(item.get(field,[])) if k+str(i) not in used]
+        missing=[o for o in ops if isinstance(o,dict) and o.get('op')=='assert' and not o.get('n')]
+        if len(records)==len(missing)==1 and not missing[0].get('t') and not missing[0].get('q'):
+            missing[0]['n']=records[0];repairs.append('bound_single_assert_record')
+        return repairs
+
     def commit(self,batch_id,value):
         row=self.db.execute('SELECT * FROM memory_flow_batches WHERE id=?',(batch_id,)).fetchone()
         if not row:raise ValueError('unknown_memory_flow_batch')
@@ -200,7 +225,10 @@ obligations是原文中容易漏掉的明确要求；保存这些限制的完整
                             if not sep or head not in bindings['sources'] or not re.fullmatch('[FL][0-9]+',tail):raise ValueError('target_handle_not_reserved')
                             refs.append(bindings['sources'][head]+'#'+tail)
                     op['t']=refs
-                results.append(self.tools.write(batch_id+':'+sid,item,reviewed=False))
+                repairs=self._repair_literal_transport(item,self.tools._source(sid))
+                receipt=self.tools.write(batch_id+':'+sid,item,reviewed=False)
+                if repairs:receipt=dict(receipt,transport_repairs=repairs)
+                results.append(receipt)
             except (ValueError,KeyError,TypeError) as exc:results.append(dict(state='rejected',source_id=sid,reason=str(exc)[:500]))
         with self.db:
             for skip in body['skips']:
@@ -219,7 +247,19 @@ obligations是原文中容易漏掉的明确要求；保存这些限制的完整
                 else:pending.append(sid)
             out=dict(state='committed',mode=row['mode'],results=results,coverage_done=done,coverage_pending=pending,
                      memory_complete=not pending and all(r['state']=='saved' for r in results),coverage_scope='batch',model_calls=0,raw_retained=True)
-            if summary is not None:out.update(continuation_summary=summary,can_compact=True)
+            if row['mode']=='active':
+                good=[r for r in results if r['state']=='saved']
+                failed=[r for r in results if r['state']!='saved']
+                stored=sum(r.get('facts',0)+r.get('linked',0)+r.get('duplicate_records',0) for r in good)
+                changed=any(r.get('operations',0) for r in good)
+                confirmed=bool(good) and not failed and bool(stored or changed)
+                out.update(state='saved' if confirmed else 'partial' if good and failed else 'not_saved',
+                    transaction_state='committed',can_confirm_saved=confirmed,saved_records=stored,
+                    message='本次提交已保存，可按具体条目确认；未提交来源仍待检查。' if confirmed else
+                    '本次记忆未完整保存，禁止声称已记住。根据results修正后使用下一步新batch_id重试；原文已保留。',
+                    repair_hints=dict(fact_provenance='f.v必须逐字摘取e引用的原文，不能润色；需要整句时保留原标点。',
+                        operation_record_required='assert/replace必须设置n，例如F0引用f[0]，L0引用p[0]。'))
+            if summary is not None:out.update(continuation_summary=summary,can_compact=not any(r['state']!='saved' for r in results))
             self.db.execute("UPDATE memory_flow_batches SET state='committed',result=? WHERE id=?",(encoded(out),batch_id))
         return out
 

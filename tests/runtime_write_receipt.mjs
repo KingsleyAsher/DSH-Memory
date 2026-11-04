@@ -1,0 +1,15 @@
+import assert from 'node:assert/strict';
+import {MemoryRuntime} from '../plugin/src/runtime.js';
+const tools=new Map();
+let reply;
+const ctx={effect:fn=>fn(),tools:{register:tool=>{tools.set(tool.name,tool);return()=>{};}},on:()=>{},logger:{warn:()=>{}}};
+const runtime=new MemoryRuntime(ctx,{request:async()=>reply},{defineTool:x=>x,createUserMessage:x=>x});
+runtime.active.set('s',[{batch_id:'b',session:'s'}]);
+const call=()=>tools.get('memory_submit').execute({batch_id:'b',memory:{items:[],skips:[]}},{agent:{session:{id:'s'}}});
+reply={state:'not_saved',can_confirm_saved:false,results:[{state:'rejected'}]};
+await assert.rejects(call(),/MEMORY_NOT_SAVED/);
+reply={state:'partial',can_confirm_saved:false};
+await assert.rejects(call(),/MEMORY_NOT_SAVED/);
+reply={state:'saved',can_confirm_saved:true};
+assert.deepEqual(await call(),reply);
+console.log('PASS: rejected/partial writes fail the host tool; only confirmed saved returns success');

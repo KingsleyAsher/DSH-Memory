@@ -217,7 +217,7 @@ class ToolMemory:
             for op in result['mutation_ops']:
                 if op['record_kind']==rk and op['ordinal'] in remap:op['ordinal']=remap[op['ordinal']]
         receipt_value=dict(state='partial' if deferred else 'saved',source_id=sid,facts=len(result['facts']),linked=len(result['linked_points']),
-                           duplicate_records=len(skipped),coverage_reviewed=reviewed and not deferred,deferred_operations=deferred)
+                           duplicate_records=len(skipped),operations=len(result['mutation_ops']),coverage_reviewed=reviewed and not deferred,deferred_operations=deferred)
         def record_receipt():
             self.db.execute('INSERT INTO tool_memory_receipts VALUES(?,?,?,?)',(request_id,sid,digest,encoded(receipt_value)))
             if reviewed and not deferred:self.db.execute("UPDATE tool_memory_reviews SET state='done' WHERE source_id=? AND sha=?",(sid,sha(source['text'])))

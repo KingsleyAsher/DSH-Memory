@@ -16,7 +16,7 @@ class PluginScopeTests(unittest.TestCase):
         b.scopes.activate('window-b','D:/project-b','session-b')
         self.assertEqual(len(b.scopes.list('window-b')['entries']),1)
         b.scopes.add('window-b','project','只输出A4 PDF。','交付',request_id='p2')
-        b.scopes.activate('window-a','D:/next-project','session-next')
+        b.scopes.activate('window-a','D:/next-project','session-next',clear=True)
         self.assertEqual([r['text'] for r in b.scopes.list('window-a')['entries']],['默认用中文答复。'])
         self.assertEqual(len(b.scopes.list('window-b')['entries']),2)
         rows=b.db.execute("SELECT payload FROM inbox WHERE state!='deleted'").fetchall()
@@ -32,7 +32,7 @@ class PluginScopeTests(unittest.TestCase):
             o=[dict(op='assert',n='F0'),dict(op='assert',n='F1')])],skips=[]))
         self.assertEqual(result['results'][0]['state'],'saved')
         self.assertEqual({r['scope'] for r in b.scopes.list('window-a')['entries']},{'global','project'})
-        b.scopes.activate('window-a','D:/next-project','session-next')
+        b.scopes.activate('window-a','D:/next-project','session-next',clear=True)
         rows=b.scopes.list('window-a')['entries']
         self.assertEqual(len(rows),1);self.assertEqual(rows[0]['scope'],'global')
         recalled=b.dispatch(dict(op='query',args=dict(session='session-next',project='D:/next-project',question='答复习惯是什么？')))

@@ -4,8 +4,8 @@ import path from 'node:path'
 import { gunzipSync } from 'node:zlib'
 import { parseKnowledgeVersion, compareKnowledgeVersions } from './versioning.js'
 
-// Manifest checks remain read-only. The client may automatically install stable
-// updates across all channels and majors; installation and activation stay host-managed.
+// Manifest checks remain read-only. Automatic installation and activation
+// continue through the host plugin manager after verification.
 export const UPDATE_REPOSITORY = 'https://github.com/KingsleyAsher/DSH-Memory'
 export const UPDATE_MANIFEST_URL = 'https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/release-manifest.json'
 export const UPDATE_PREVIEW_MANIFEST_URL = 'https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/preview-manifest.json'

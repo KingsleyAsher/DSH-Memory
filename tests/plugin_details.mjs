@@ -1,0 +1,22 @@
+import assert from 'node:assert/strict';
+import {readFile} from 'node:fs/promises';
+import {pluginDetails} from '../plugin/src/details.js';
+import {createUpdateChecker} from '../plugin/src/updates.js';
+const pkg=JSON.parse(await readFile(new URL('../plugin/package.json',import.meta.url),'utf8'));
+const info=pluginDetails(pkg);
+assert.equal(info.version,pkg.version);
+assert.equal(info.updateMode,'automatic');
+assert.deepEqual(new Set(info.repositories.map(r=>r.name)),new Set(['GitHub','Gitee','GitCode']));
+for(const repo of info.repositories)assert.match(repo.url,/^https:\/\/(github|gitee|gitcode)\.com\/KingsleyAsher\/DSH-Memory$/);
+let calls=0;
+const checker=createUpdateChecker({currentVersion:pkg.version,sourceIds:['github'],previewManifestUrl:null,fetch:async()=>{
+ calls++;return new Response(JSON.stringify({package:pkg.name,version:'1.0.5',tgz:'local-dsh-memory-1.0.5.tgz',sha256:'a'.repeat(64),buildId:'a'.repeat(16),bytes:100}));
+}});
+const release=await checker.check({force:true});
+assert.equal(release.updateAvailable,true);assert.equal(release.latestVersion,'1.0.5');assert.equal(calls,1);
+const offline=await createUpdateChecker({currentVersion:pkg.version,sourceIds:['github'],previewManifestUrl:null,fetch:async()=>{throw Error('offline');}}).check({force:true});
+assert.equal(offline.ok,false);assert.equal(offline.currentVersion,pkg.version);
+const source=await readFile(new URL('../plugin/src/client.js',import.meta.url),'utf8');
+assert.ok(source.includes('installBundle('));
+assert.ok(source.includes('15000')&&source.includes('6*60*60*1000'));
+console.log('PASS: runtime metadata, all repositories, newer release, offline status and preserved automatic updates');

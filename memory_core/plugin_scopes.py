@@ -25,18 +25,41 @@ class PluginScopes:
         if 'metadata' not in {r[1] for r in self.db.execute('PRAGMA table_info(plugin_memory_entries)')}:
             with self.db:self.db.execute("ALTER TABLE plugin_memory_entries ADD COLUMN metadata TEXT NOT NULL DEFAULT '{}'")
 
+    def shared_project_key(self, project):
+        normalized=project.replace('\\','/').rstrip('/').casefold()
+        # Reuse previously installed project scopes; never orphan old entries.
+        for row in self.db.execute('SELECT scope_key,project FROM plugin_context_labels ORDER BY rowid'):
+            if row['project'].replace('\\','/').rstrip('/').casefold()==normalized:
+                if self.db.execute('SELECT 1 FROM plugin_session_scopes WHERE scope_key=? AND retired=1',(row['scope_key'],)).fetchone():continue
+                return row['scope_key']
+        return 'project:'+sha('workspace\0'+normalized)[:32]
+
     def project_for(self,session,fallback):
         row=self.db.execute('SELECT * FROM plugin_session_scopes WHERE session_id=?',(session,)).fetchone()
         if row:
             if row['retired']:raise ValueError('project_session_retired')
             return row['scope_key']
         if session:
-            key='project:'+sha('provisional\0'+session+'\0'+fallback)[:32]
+            key=self.shared_project_key(fallback)
             with self.db:
                 self.db.execute('INSERT INTO plugin_session_scopes VALUES(?,?,0)',(session,key))
                 self.db.execute('INSERT OR IGNORE INTO plugin_context_labels VALUES(?,?)',(key,fallback))
             return key
         return fallback
+
+    def project_keys(self,key):
+        """Older builds assigned a new key per window; share their same-project notes.
+
+        Keep immutable proof scopes unchanged. Retired/explicitly cleared scopes
+        remain excluded and another project's entries are never included.
+        """
+        if not key:return []
+        label=self.db.execute('SELECT project FROM plugin_context_labels WHERE scope_key=?',(key,)).fetchone()
+        if not label:return [key]
+        normalized=label[0].replace('\\','/').rstrip('/').casefold()
+        return [r['scope_key'] for r in self.db.execute('SELECT * FROM plugin_context_labels')
+                if r['project'].replace('\\','/').rstrip('/').casefold()==normalized and
+                not self.db.execute('SELECT 1 FROM plugin_session_scopes WHERE scope_key=? AND retired=1',(r['scope_key'],)).fetchone()]
 
     def sync_entries(self):
         """Archive only already-admitted assertions and their minimal proofs.
@@ -69,6 +92,9 @@ class PluginScopes:
                 if row['claim_id'] not in active:self.db.execute('UPDATE plugin_memory_entries SET deleted=1 WHERE id=?',(row['id'],))
 
     def clear_project(self,scope_key):
+        return sum(self._clear_scope(key) for key in self.project_keys(scope_key))
+
+    def _clear_scope(self,scope_key):
         if not scope_key or scope_key==GLOBAL_PROJECT:return 0
         with self.db:self.db.execute('DELETE FROM plugin_memory_candidates WHERE project=?',(scope_key,))
         self.sync_entries()
@@ -88,8 +114,8 @@ class PluginScopes:
         if project is not None and (not isinstance(project,str) or not project.strip() or len(project)>2000):raise ValueError('invalid_project')
         old=self.db.execute('SELECT * FROM plugin_windows WHERE window_id=?',(window_id,)).fetchone()
         changed=bool(old and (old['project']!=project or clear))
-        removed=self.clear_project(old['scope_key']) if changed else 0
-        key=old['scope_key'] if old and not changed else ('project:'+sha(window_id+'\0'+project+'\0'+uuid.uuid4().hex)[:32] if project else None)
+        removed=self.clear_project(old['scope_key']) if old and clear else 0
+        key=old['scope_key'] if old and not changed else (('project:'+uuid.uuid4().hex if clear else self.shared_project_key(project)) if project else None)
         # A first turn can be admitted just before the UI's activation arrives.
         # Adopt its provisional scope instead of silently orphaning that turn.
         if not old and session_id and project:
@@ -111,14 +137,21 @@ class PluginScopes:
         """Preserve a short explicit user instruction verbatim; no inferred facts."""
         if not isinstance(text,str) or len(text)>600:return False
         if re.search(r'不要记|不用记|别记|不必记|例如|比如|他[说讲]|她[说讲]|是否|能否|[?？]',text):return False
-        if not (re.search(r'请?记住|记下来|记一下',text) or re.search(r'以后我的.{1,80}(都要|一律|默认)',text)):return False
-        window='explicit:'+session
-        with self.db:self.db.execute('INSERT INTO plugin_windows VALUES(?,?,?) ON CONFLICT(window_id) DO UPDATE SET project=excluded.project,scope_key=excluded.scope_key',(window,project,project))
-        request='explicit-'+sha(source_id+'\0'+text)[:32]
-        # Scope stays conservative; the normal model contract can classify or
-        # revise it later. A literal request is not a semantic extraction score.
-        result=self.add(window,'project',text,text[:50],request_id=request)
-        with self.db:self.db.execute("UPDATE plugin_memory_entries SET origin='explicit' WHERE origin='manual' AND project=? AND body=?",(project,text))
+        if not (re.search(r'请?记住|记下来|记一下',text) or re.search(r'以后(?:我的|所有的?|每次).{1,120}(都要|一律|默认|就要|要做成)',text,re.S)):return False
+        # Bind to the real user message, not a second synthetic manual source.
+        scope='global' if re.search(r'以后(?:我的|所有的?|每次)',text) and not re.search(r'本项目|这个项目|当前项目|本次|这次',text) else 'project'
+        parts=segments(dict(text=text))
+        if not 1<=len(parts)<=16:return False
+        item=dict(id=source_id,f=[dict(v=p['text'],e=[i+1],a=text[:50],t='',f='rule',l=scope) for i,p in enumerate(parts)],
+                  o=[dict(op='assert',n='F'+str(i)) for i in range(len(parts))])
+        result=self.bridge.flow.tools.write('explicit-'+sha(source_id+'\0'+text)[:32],item,reviewed=True)
+        self.sync_entries()
+        entries=self.db.execute('''SELECT e.id FROM plugin_memory_entries e JOIN memory_claims m ON m.id=e.claim_id
+          WHERE e.source_id=? ORDER BY m.ordinal''',(source_id,)).fetchall()
+        if entries:
+            with self.db:
+                self.db.execute("UPDATE plugin_memory_entries SET origin='explicit',deleted=1 WHERE source_id=?",(source_id,))
+                self.db.execute("UPDATE plugin_memory_entries SET deleted=0,title=?,body=?,quote=? WHERE id=?",(text[:50],text,text,entries[0]['id']))
         return result.get('state')=='saved'
 
     def suggest(self,session,title,text,quote,reason,confidence,scope='project'):
@@ -180,13 +213,15 @@ class PluginScopes:
 
     def list(self,window_id):
         self.sync_entries();context=self.window(window_id)
-        rows=self.db.execute("SELECT * FROM plugin_memory_entries WHERE deleted=0 AND (scope='global' OR project=?) ORDER BY created DESC",(context['scope_key'],)).fetchall()
+        keys=self.project_keys(context['scope_key'])
+        rows=self.db.execute("SELECT * FROM plugin_memory_entries WHERE deleted=0 ORDER BY created DESC").fetchall()
+        rows=[r for r in rows if r['scope']=='global' or r['project'] in keys]
         return dict(project=context['project'],entries=[dict(id=r['id'],scope=r['scope'],project=r['project'],title=r['title'],text=r['body'],origin=r['origin'],created=r['created'],quote=r['quote'],proofs=json.loads(r['proofs']),metadata=json.loads(r['metadata'])) for r in rows])
 
     def remove(self,window_id,entry_id):
         context=self.window(window_id)
         row=self.db.execute('SELECT * FROM plugin_memory_entries WHERE id=? AND deleted=0',(entry_id,)).fetchone()
-        if not row or row['scope']!='global' and row['project']!=context['scope_key']:raise ValueError('memory_not_in_current_scope')
+        if not row or row['scope']!='global' and row['project'] not in self.project_keys(context['scope_key']):raise ValueError('memory_not_in_current_scope')
         # A tombstone prevents automatic re-archiving from the same old claim.
         with self.db:self.db.execute("UPDATE plugin_memory_entries SET deleted=1,body='',quote='',proofs='[]' WHERE id=?",(entry_id,))
         if row['origin'] in ('manual','explicit'):self.core.delete(row['source_id'])
@@ -194,8 +229,10 @@ class PluginScopes:
 
     def evidence(self,project,question):
         self.sync_entries()
-        rows=self.db.execute("SELECT * FROM plugin_memory_entries WHERE deleted=0 AND (scope='global' OR (project=? AND origin IN ('manual','explicit'))) ORDER BY created DESC",(project,)).fetchall()
-        project_titles={r[0] for r in self.db.execute("SELECT title FROM plugin_memory_entries WHERE deleted=0 AND scope='project' AND project=?",(project,))}
+        keys=self.project_keys(project)
+        rows=[r for r in self.db.execute("SELECT * FROM plugin_memory_entries WHERE deleted=0 ORDER BY created DESC")
+              if r['scope']=='global' or r['project'] in keys]
+        project_titles={r['title'] for r in rows if r['scope']=='project'}
         # Explicitly saved notes are bounded standing context. They do not all
         # enter an ever-growing prompt: share the core's final token budget.
         scored=[]
@@ -206,5 +243,5 @@ class PluginScopes:
             for piece in pieces:
                 score=len(query & set((r['title']+piece).lower()))
                 scored.append((score,1 if r['scope']=='project' else 0,r['created'],r,piece))
-        return [dict(source_id=r['id'],value=piece,quote=piece if r['origin']=='manual' else r['quote'],scope=r['scope'],origin=r['origin'],title=r['title'],
+        return [dict(source_id=r['id'],value=piece,quote=piece if r['origin']=='manual' else r['quote'],scope=r['scope'],origin=r['origin'],title=r['title'],source_project=r['project'],applicable_here=r['scope']=='global' or r['project'] in keys,
                      archived=True,**json.loads(r['metadata'])) for _,_,_,r,piece in sorted(scored,key=lambda v:v[:3],reverse=True)]

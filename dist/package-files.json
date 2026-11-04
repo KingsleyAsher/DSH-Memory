@@ -1,23 +1,23 @@
 [
   {
     "path": "CHANGELOG.md",
-    "sha256": "12d88a4486d44275d966747d90988539f506e4a9e6c10f2f98e0a0f41dccddd6",
-    "bytes": 1777
+    "sha256": "e36b697ab04be153edf78532e30d0f4930d3f07ebb6980a4697a2c0a8576562c",
+    "bytes": 2445
   },
   {
     "path": "GUIDE.en.md",
-    "sha256": "e917a5b68d714300f3936a389dc1168e75f76f8fd350927c66edd17cf79adf63",
-    "bytes": 4417
+    "sha256": "9b0e70e54753e5988480e5fdb6b722d5035f259b2373186b4ed2337d49773fe7",
+    "bytes": 5296
   },
   {
     "path": "GUIDE.zh-CN.md",
-    "sha256": "71c574f35b9dcc96e52b150926555942b3490e6e2a725d6194bebca6409279c9",
-    "bytes": 4425
+    "sha256": "b95f311ff031d6fcf2e8e18f7bce62143edda5ca7148fddea204feace9b36ec4",
+    "bytes": 5285
   },
   {
     "path": "LICENSE",
-    "sha256": "b3f3dc46b983c60a02a0dc8d836b924187e2cedce324e9761dd95b9ba8be0b8b",
-    "bytes": 1091
+    "sha256": "becec5cb27f28e824b3d63c8978f525f7b7d02e301322d7cda535fa8b82dbdac",
+    "bytes": 1070
   },
   {
     "path": "PROJECT-RECORD.en.md",
@@ -36,23 +36,23 @@
   },
   {
     "path": "README.md",
-    "sha256": "c3b6705445ae19512ba4e47412fe190b30f81db53cb6e1aa99836cb90e19b1ab",
+    "sha256": "5678093674fad0e27177d4f775bed1626317061da2d73b783f841f25c8f91e53",
     "bytes": 5357
   },
   {
     "path": "README.zh-CN.md",
-    "sha256": "5a322411b5e3403ee661e3fc99de4a92bc16eb8fd26b4c9da8632b2095979653",
-    "bytes": 5086
+    "sha256": "941ee91130a065cc76aec76a7dbabdd0fd259bf987a6b84a33dc4f345dbc4c99",
+    "bytes": 5286
   },
   {
     "path": "RELEASE.en.md",
-    "sha256": "d7c32809fb6268659b37233978b2251678ca4ec2b1fbadf36571079bbf0f8e9b",
-    "bytes": 377
+    "sha256": "de855ce3b5988c86f09f0756cdb96e8e11b26c9a6124bd28447051a1298b51ac",
+    "bytes": 1767
   },
   {
     "path": "RELEASE.zh-CN.md",
-    "sha256": "07ab42c9721fc7c1f7248e148f4063ca40c1905eef90c96300d26f9c0dbd49d6",
-    "bytes": 428
+    "sha256": "cfeca25ad35a9b8e63edc490eee9c311d9fa86174001a21f5674fd7f869f7bd5",
+    "bytes": 1418
   },
   {
     "path": "VERSIONING.en.md",
@@ -71,7 +71,7 @@
   },
   {
     "path": "package.json",
-    "sha256": "14a08604873982e895a6f6fed44b35e114ea8a1f24b7e5df64d14027b4fbd96c",
+    "sha256": "433321807592c3e5325af32a56723487b408436775d9160c0bba6844053626b5",
     "bytes": 1272
   },
   {
@@ -201,8 +201,8 @@
   },
   {
     "path": "python/memory_core/memory_flow.py",
-    "sha256": "ba5651ef10a5d4a26d19f8a6736dce22cba94e017704779299ea0851bd256c25",
-    "bytes": 20534
+    "sha256": "bd5cb0a38829e6439ea156c107da42f131bb2b6146474bebe625efd0d7625b62",
+    "bytes": 23513
   },
   {
     "path": "python/memory_core/memory_mcp.py",
@@ -236,13 +236,13 @@
   },
   {
     "path": "python/memory_core/plugin_bridge.py",
-    "sha256": "bd34aabee5049678aca6904ebc62a1fd418dc2bb0e0fa46caff91f19a531e732",
-    "bytes": 10452
+    "sha256": "c10050c7f1875b2ecaecd737d2dfba590a23e5a922b04de14f46bf19a0d6a4c9",
+    "bytes": 10445
   },
   {
     "path": "python/memory_core/plugin_scopes.py",
-    "sha256": "dd7832bd5c89a3d00b193a3fc138b599b8f5499eeb531a67b36b72f19e2a1aee",
-    "bytes": 16519
+    "sha256": "4298dace8d9eba039c2187f4bf784d4dd321b36efbae84d056ec5a2fac8ffeb2",
+    "bytes": 18798
   },
   {
     "path": "python/memory_core/policy.py",
@@ -321,8 +321,8 @@
   },
   {
     "path": "python/memory_core/tool_memory.py",
-    "sha256": "1ca93680afb592725f3872f1b31581f5f1997f229fb36b157b173f18b14b96c2",
-    "bytes": 21118
+    "sha256": "522ff91d58767cd129dde9aa633b0c7324ff028795ba20f53b90ae98d13af5f4",
+    "bytes": 21157
   },
   {
     "path": "python/memory_core/tool_wire.py",
@@ -341,8 +341,13 @@
   },
   {
     "path": "src/client.js",
-    "sha256": "cb8f6a59ec8833f941fcfd1503869ef531ecc26552abdc616dc5cbb8f190fa78",
-    "bytes": 124293
+    "sha256": "fe921fdd832c3b9d6be46a452999e6a402c65b5743cd6845ec83789010210865",
+    "bytes": 127334
+  },
+  {
+    "path": "src/details.js",
+    "sha256": "88fb76edc22760471ba5b30ed3c8b6299bd99751ee5f5c26878bf2fbf9fa177a",
+    "bytes": 549
   },
   {
     "path": "src/index.js",
@@ -356,13 +361,13 @@
   },
   {
     "path": "src/runtime.js",
-    "sha256": "8cd711c4f55b45cd8885df9fd7f2527c3a74a3be394476a0e1e5e8698bdd30a4",
-    "bytes": 12472
+    "sha256": "47e20c270a962945a094b245fb80c97ca520d250d5ea325b8128661e91503f55",
+    "bytes": 13024
   },
   {
     "path": "src/store.js",
-    "sha256": "00b82c62a9d71a9e427f01a2ef6f32401f6fb51a38ecdec9d67afa2ce0676bb7",
-    "bytes": 6750
+    "sha256": "17d2433288aec444f3adf4dd52d62d48c0f6b4c1cb137878ff4b3bb7f130008d",
+    "bytes": 6930
   },
   {
     "path": "src/ui.js",
@@ -371,8 +376,8 @@
   },
   {
     "path": "src/updates.js",
-    "sha256": "1b151c7ceba0c6a5b75c9b9a8728b6caf9046bad41f0e1f5865023970460d84b",
-    "bytes": 15775
+    "sha256": "147677f78bcb325d07e8cfbfc68b7188cabd0e3426d8e7ef26ee41838e8cc1bb",
+    "bytes": 15743
   },
   {
     "path": "src/versioning.js",
