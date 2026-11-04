@@ -1,4 +1,4 @@
-# DSH Memory 1.0.0
+# DSH Memory 1.0.1
 
 Long-term memory for DeepSeek Harness. Capture reusable preferences, constraints and project facts with their sources, then recall relevant evidence in later turns. Records support correction, withdrawal, manual management and optional knowledge-base integration.
 
@@ -8,18 +8,18 @@ Long-term memory for DeepSeek Harness. Capture reusable preferences, constraints
 
 - [Project and evolution record](PROJECT-RECORD.en.md): goals, architecture, development stages and next steps.
 - [User guide](GUIDE.en.md): installation, configuration, scopes, integration and troubleshooting.
-- [Release notes](RELEASE.en.md): the 1.0.0 deliverable, compatibility and validation limits.
+- [Release notes](RELEASE.en.md): the 1.0.1 deliverable, compatibility and validation limits.
 - [Changelog](CHANGELOG.md): public release history.
 
 ## Current release
 
-The current public release is **1.0.0**, packaged as `@local/dsh-memory`. It consolidates the local beta implementation while retaining storage and preset identifiers for continuity. The version number does not establish perfect extraction accuracy or compatibility with every DSH release.
+The current public release is **1.0.1**, packaged as `@local/dsh-memory`. It consolidates the local beta implementation while retaining storage and preset identifiers for continuity. The version number does not establish perfect extraction accuracy or compatibility with every DSH release.
 
 ## Download
 
-- [Release 1.0.0](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.0)
-- [Plugin package](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.0/local-dsh-memory-1.0.0.tgz)
-- [Repository download](dist/local-dsh-memory-1.0.0.tgz) · [SHA-256 checksums](dist/SHA256SUMS)
+- [Release 1.0.1](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.1)
+- [Plugin package](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.1/local-dsh-memory-1.0.1.tgz)
+- [Repository download](dist/local-dsh-memory-1.0.1.tgz) · [SHA-256 checksums](dist/SHA256SUMS)
 
 ## What the plugin does
 
@@ -41,7 +41,7 @@ python -m pip install numpy
 Add this installation source in the DSH plugin manager, or choose the downloaded local `.tgz`:
 
 ```text
-https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.0.tgz
+https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.1.tgz
 ```
 
 Enable the plugin and open Memory in the sidebar, under More in narrow layouts, or through the conversation view. If the host asks for a restart, quit the tray process as well. Memory attaches to supported presets as agents are created or resumed; a separate DSH Memory preset remains available.
@@ -56,7 +56,7 @@ Published files exclude the developer's memories, chats, knowledge-base contents
 
 Synthetic tests cover scope lifecycle, candidate review and explicit capture. Package contents and hashes are recorded in the [release manifest](release-manifest.json). Earlier integration checks used an isolated worker and synthetic knowledge sources; they do not establish accuracy on private material or long-running daily use.
 
-Attachment extraction is outside this plugin. Custom compactors, complex cross-project references and arbitrary context lengths are not universally supported. Pending work persists after shutdown, but no inference runs without a host. This release has no cross-device synchronization or automatic updater.
+Attachment extraction is outside this plugin. Custom compactors, complex cross-project references and arbitrary context lengths are not universally supported. Pending work persists after shutdown, but no inference runs without a host. [Update rules](VERSIONING.en.md) allow same-major stable updates automatically; major and preview changes remain manual. Status is inline, with no update popups. Cross-device synchronization is not provided.
 
 ## Source and build
 

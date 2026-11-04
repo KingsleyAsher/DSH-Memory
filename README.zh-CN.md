@@ -1,4 +1,4 @@
-# DSH Memory 1.0.0
+# DSH Memory 1.0.1
 
 面向 DeepSeek Harness 的长期记忆插件。将值得复用的偏好、约束和项目事实保存为带来源的记录，在后续对话中按需召回，并支持更正、撤回、人工管理与可选知识库联动。
 
@@ -8,18 +8,18 @@
 
 - [项目与演进记录](PROJECT-RECORD.zh-CN.md)：设计目标、架构、阶段演进与后续方向。
 - [使用说明](GUIDE.zh-CN.md)：安装、配置、记忆范围、知识库联动及排障。
-- [发布说明](RELEASE.zh-CN.md)：1.0.0 的交付范围、兼容要求和验证边界。
+- [发布说明](RELEASE.zh-CN.md)：1.0.1 的交付范围、兼容要求和验证边界。
 - [版本记录](CHANGELOG.md)：公开版本的变化。
 
 ## 当前版本
 
-当前公开版本为 **1.0.0**，插件包名为 `@local/dsh-memory`。基于此前的本地测试版整理发布，保留存储路径与预设内部标识，以延续已有数据和引用。正式版本号不代表模型提炼零错误或任意宿主版本兼容。
+当前公开版本为 **1.0.1**，插件包名为 `@local/dsh-memory`。基于此前的本地测试版整理发布，保留存储路径与预设内部标识，以延续已有数据和引用。正式版本号不代表模型提炼零错误或任意宿主版本兼容。
 
 ## 下载
 
-- [1.0.0 Release 与安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.0)
-- [直接下载安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.0/local-dsh-memory-1.0.0.tgz)
-- [仓库内安装包](dist/local-dsh-memory-1.0.0.tgz) · [SHA-256 校验](dist/SHA256SUMS)
+- [1.0.1 Release 与安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.1)
+- [直接下载安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.1/local-dsh-memory-1.0.1.tgz)
+- [仓库内安装包](dist/local-dsh-memory-1.0.1.tgz) · [SHA-256 校验](dist/SHA256SUMS)
 
 ## 插件能做什么
 
@@ -41,7 +41,7 @@ python -m pip install numpy
 在 DSH 插件管理器中添加以下安装源，或选择下载后的本地 `.tgz` 文件：
 
 ```text
-https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.0.tgz
+https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.1.tgz
 ```
 
 启用后打开左侧“记忆”（窄窗口可能收入“更多”）或会话中的记忆视图。宿主要求重新加载时，完全退出含托盘进程后重启。现有预设在创建或恢复智能体时接入记忆能力；也保留独立“DSH 记忆”预设。
@@ -54,9 +54,9 @@ https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-m
 
 ## 验证与限制
 
-本版本提供合成数据的作用域、待确认候选及显式记忆测试，包文件清单与摘要也可核验。此前联动验证使用隔离工作进程和合成知识库，不代表真实个人资料或长期模型准确率测试。1.0.0 发布检查结果见 [发布清单](release-manifest.json)。
+本版本提供合成数据的作用域、待确认候选及显式记忆测试，包文件清单与摘要也可核验。此前联动验证使用隔离工作进程和合成知识库，不代表真实个人资料或长期模型准确率测试。1.0.1 发布检查结果见 [发布清单](release-manifest.json)。
 
-图像、音频和附件原文提取不在本插件内。自定义压缩引擎、复杂跨项目指代和任意长上下文质量尚无普遍保证。宿主关闭后只保留待办，不会继续后台推理。此版本不提供跨设备同步或自动更新器。
+图像、音频和附件原文提取不在本插件内。自定义压缩引擎、复杂跨项目指代和任意长上下文质量尚无普遍保证。宿主关闭后只保留待办，不会继续后台推理。更新遵循[版本与更新规则](VERSIONING.zh-CN.md)：同主版本正式更新自动安装，跨主版本和预览版手动选择，状态仅在页内显示，无更新弹窗。此版本不提供跨设备同步。
 
 ## 源码与构建
 

@@ -13,6 +13,8 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
 `;
     const FULLSCREEN_STYLE = ".dm-page{padding:0!important}.dm-inner{max-width:none!important;width:100%}.dsh-memory [hidden]{display:none!important}.dm-inner>.dm-tabs{border-radius:0;padding:6px 18px}.dm-list,.dm-toolbar,.dm-scope-note,.dm-header{margin:16px 24px}.dm-page iframe{min-height:580px}";
     let client;
+    let updateManager=null;
+
     let windowId;
     try { windowId = sessionStorage.getItem('dsh-memory.window'); if (!windowId) { windowId = crypto.randomUUID(); sessionStorage.setItem('dsh-memory.window', windowId); } }
     catch { windowId = crypto.randomUUID(); }
@@ -79,6 +81,58 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
       return e('iframe',{ref,title:'记忆关系星云',sandbox:'allow-scripts',srcDoc:src,style:{width:'100%',height:'calc(100vh - 62px)',border:0,display:'block',background:'#050e21'}});
     }
     // END NEBULA VIEW
+
+    let updateState={message:'',release:null,busy:false};
+    const updateEvent=()=>window.dispatchEvent(new Event('dsh-memory:update'));
+    let updating;
+    async function runUpdate(version) {
+      if(updating)return updating;
+      updating=(async()=>{
+        if(!updateManager?.installBundle||!updateManager?.waitForInstall){updateState.message='请通过宿主插件管理器安装新版';return;}
+        const key='dsh-memory.install';
+        let record=JSON.parse(localStorage.getItem(key)||'null');
+        updateState.busy=true;updateEvent();
+        try {
+          let reply;
+          if(record){reply=await updateManager.waitForInstall(record.requestId);}
+          else {
+            const prepared=await api('updates.prepare',{expectedVersion:version});
+            if(!prepared.ok||prepared.latestVersion!==version)throw Error('更新版本已变化');
+            record={version,requestId:'memory-update-'+crypto.randomUUID()};
+            localStorage.setItem(key,JSON.stringify(record));
+            reply=await updateManager.installBundle(prepared.spec,{enabled:true,requestId:record.requestId});
+            if(reply?.ok&& !['applied','failed','cancelled','restart-required','overridden'].includes(reply.value?.application))reply=await updateManager.waitForInstall(record.requestId);
+          }
+          if(!reply?.ok)throw Error('安装结果未确认，请查看宿主插件管理器；不会自动重复安装');
+          const status=reply.value?.application;
+          updateState.message=status==='restart-required'?'新版已安装，请完全退出并重启 DSH':status==='applied'?'新版已安装；当前界面如未更新，请刷新或重启':status==='failed'||status==='cancelled'?'安装失败或取消，请查看宿主插件管理器':'安装状态待确认，请查看宿主插件管理器';
+          if(['failed','cancelled'].includes(status))localStorage.removeItem(key);
+          // Keep successful/unknown receipts until the running version changes.
+        }catch(error){updateState.message=error.message;}
+        finally{updateState.busy=false;updateEvent();}
+      })().finally(()=>{updating=null;updateEvent();});
+      return updating;
+    }
+    async function checkUpdate(force=false){
+      try{
+        const result=await api('updates.check',{force});updateState.release=result;
+        const pending=JSON.parse(localStorage.getItem('dsh-memory.install')||'null');
+        if(pending?.version===result.currentVersion)localStorage.removeItem('dsh-memory.install');
+        updateState.message=result.ok?(result.updateAvailable?'发现正式版 '+result.latestVersion:'当前版本 '+result.currentVersion):result.error;
+        updateEvent();
+        if(result.ok&&result.autoInstallEligible&&!pending)await runUpdate(result.latestVersion);
+        else if(pending&&pending.version!==result.currentVersion)updateState.message='已有安装记录，请刷新或重启 DSH；状态可在宿主插件管理器查看';
+      }catch(error){updateState.message=error.message;}finally{updateEvent();}
+    }
+    function Updates(){
+      const [,refresh]=R.useState(0);R.useEffect(()=>{const listener=()=>refresh(n=>n+1);window.addEventListener('dsh-memory:update',listener);return()=>window.removeEventListener('dsh-memory:update',listener)},[]);
+      const release=updateState.release;
+      return e('div',{className:'dm-toolbar',style:{margin:'8px 24px'},'aria-label':'版本与更新'},
+        e('span',{role:'status'},updateState.message||'版本与更新'),
+        e('button',{className:'dm-btn',disabled:updateState.busy,onClick:()=>checkUpdate(true)},'检查更新'),
+        release?.updateAvailable&&!release.autoInstallEligible&&e('button',{className:'dm-btn',disabled:updateState.busy,onClick:()=>runUpdate(release.latestVersion)},'安装正式版 '+release.latestVersion),
+        release?.preview?.updateAvailable&&e('button',{className:'dm-btn',disabled:updateState.busy,onClick:()=>runUpdate(release.preview.latestVersion)},'安装预览版 '+release.preview.latestVersion));
+    }
 
     function MemoryPage() {
       const [reviews,setReviews]=R.useState([]);
@@ -147,6 +201,7 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
       return e(R.Fragment, null, e('section', { className: 'dsh-memory dm-page' }, e('div', { className: 'dm-inner' },
         e('header', { className: 'dm-header',hidden:view==='graph' }, e('div', { className: 'dm-title' }, e(Icon, { size: 27 }), e('div', null, e('h1', null, '记忆'), e('div', { className: 'dm-kicker' }, '自动收录 · 手动补充'))),
           e('button', { ref: addButton, className: 'dm-btn dm-btn-primary', onClick: () => { setDraftScope(scope === 'project' && !data.project ? 'global' : scope); setError(''); setOpen(true); } }, '＋ 新增记忆')),
+        e(Updates),
         e('div',{className:'dm-tabs','aria-label':'记忆视图'},['graph','list','review'].map(v=>e('button',{key:v,className:'dm-tab','aria-pressed':view===v,onClick:()=>setView(v)},v==='graph'?'关系网':v==='list'?'全部条目':'待确认 ('+reviews.length+')'))),
         view==='review' && e('div',{className:'dm-list'},reviews.length?reviews.map(item=>e('form',{key:item.id,className:'dm-item',onSubmit:async ev=>{ev.preventDefault();const text=new FormData(ev.currentTarget).get('text');try{await api('review',{candidate_id:item.id,accept:true,text});await refresh();changed();}catch(err){setError(err.message);}}},
           e('strong',null,item.title),e('span',{className:'dm-badge'},label(item.scope)),e('p',null,'需要确认：'+item.reason),e('p',null,'用户原话：'+item.quote),
@@ -165,6 +220,11 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
       client = ctx;
       ctx.effect(() => { const style = document.createElement('style'); style.dataset.plugin = 'dsh-memory'; style.textContent = STYLE + FULLSCREEN_STYLE + ".dm-page{height:100%;min-height:0}.dm-inner{height:100%;display:flex;flex-direction:column}.dm-inner>.dm-tabs{flex:0 0 auto}.dm-page iframe{flex:1 1 0;height:0!important;min-height:0!important}.dm-list{overflow:auto}"; document.head.appendChild(style); return () => style.remove(); }, 'memory: styles');
       installLifecycle(ctx);
+      ctx.inject(['remote','remote.pluginManager'],scope=>{
+        updateManager=scope.remote.pluginManager;
+        scope.effect(()=>()=>{updateManager=null;},'memory: update manager');
+      });
+      ctx.effect(()=>{const a=setTimeout(()=>void checkUpdate(),15000);const b=setInterval(()=>void checkUpdate(true),6*60*60*1000);return()=>{clearTimeout(a);clearInterval(b)}},'memory: silent update checks');
       ctx.slots.inject('conversation.view', () => ctx.slots.register({ name: 'conversation.view', id: 'memory', order: 5, label: () => '记忆' }, MemoryPage));
       ctx.slots.inject('main', () => ctx.slots.register({ name: 'main', key: 'memory-panel' }, MemoryPage));
       ctx.slots.inject('sidebar.panellist', () => ctx.slots.register({ name: 'sidebar.panellist', id: 'memory-panel', order: 15, label: () => '记忆' }, Icon));

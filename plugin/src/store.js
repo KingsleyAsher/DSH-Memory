@@ -1,3 +1,5 @@
+import {createUpdateChecker,createUpdateDownloader} from './updates.js';
+import {readFileSync} from 'node:fs';
 import { Service } from '@deepseek-ai/cordis';
 import { resolve, isAbsolute } from 'node:path';
 import { existsSync } from 'node:fs';
@@ -12,11 +14,17 @@ const OPS = {
   reviews: 'review_list', review: 'review_resolve',
   revision: 'revision',
 };
-export async function handleMemoryRequest(bridge, request) {
+export async function handleMemoryRequest(bridge, request, updates) {
   try {
     const text = await request.text();
     if (text.length > 24000) return Response.json({ error: '输入过长' }, { status: 413 });
-    const body = JSON.parse(text); const op = OPS[body.op];
+    const body = JSON.parse(text);
+    if(body.op?.startsWith('updates.')) {
+      if(body.op==='updates.check')return Response.json(await updates.checker.check({force:!!body.args?.force}));
+      if(body.op==='updates.prepare')return Response.json(await updates.downloader.prepare({expectedVersion:body.args?.expectedVersion}));
+      throw Error('unknown_update_operation');
+    }
+    const op = OPS[body.op];
     if (!op || !body.args || typeof body.args.window_id !== 'string') throw new Error('invalid_memory_request');
     const value = await bridge.request(op, body.args);
     return Response.json(value);
@@ -28,6 +36,11 @@ export async function handleMemoryRequest(bridge, request) {
 export default class MemoryStore extends Service {
   constructor(ctx, config = {}) {
     super(ctx, 'memoryStore');
+    const currentVersion=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8')).version;
+    const profile=ctx.get('profileContext');
+    const checker=createUpdateChecker({currentVersion});
+    const downloader=createUpdateDownloader({checker,cacheDir:profile?.dir?resolve(profile.dir,'.memory-plugin-updates'):null});
+    const updates={checker,downloader};
     // Cordis rejects undeclared service property reads, even before ?? fallback.
     // Use its optional lookup and a durable home-relative default.
     const stateDir = config.stateDir || resolve(ctx.get('baseDir') ?? resolve(process.env.DSH_HOME || resolve(homedir(), '.dsh'), 'storages'), 'memory-beta-state');
@@ -88,7 +101,7 @@ export default class MemoryStore extends Service {
     // admission. Do not register an unauthenticated webServer route.
     ctx.inject(['connection'], scope => {
       scope.connection.fetch.register({ path: '/api/dsh-memory', methods: ['POST'], requestBody: 'buffered',
-        fetch: request => handleMemoryRequest(this.bridge, request) });
+        fetch: request => handleMemoryRequest(this.bridge, request, updates) });
     });
   }
 }

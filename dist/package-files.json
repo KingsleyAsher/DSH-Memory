@@ -1,8 +1,8 @@
 [
   {
     "path": "CHANGELOG.md",
-    "sha256": "a43b20df993ca0aba0a6cec99000b6fe3dfe5c476e7ff9c01c16d04179086db7",
-    "bytes": 1049
+    "sha256": "5559173d6bd4826c4ad384ac4076729ed950b6a8e3a6b00991078f3bc2136c63",
+    "bytes": 1344
   },
   {
     "path": "GUIDE.en.md",
@@ -36,23 +36,33 @@
   },
   {
     "path": "README.md",
-    "sha256": "b1f42fb936db4f5d2015f7493c7c6ac79ae72dfb93dd839a09fe3ff7988aeb97",
-    "bytes": 4843
+    "sha256": "96edf33d3415044631f5712c12f7c9583dc76dbb85fd49d907bb1d926338b8e4",
+    "bytes": 4980
   },
   {
     "path": "README.zh-CN.md",
-    "sha256": "624a4d9a391e83af25985015141dfc11f3a763a6ebb8d89923584e463284ccda",
-    "bytes": 4546
+    "sha256": "5a6568f221bc2189bf8a695e18bd9ba99cd7123a508dd3345f39faf466768d06",
+    "bytes": 4710
   },
   {
     "path": "RELEASE.en.md",
-    "sha256": "2acfdc7f5ab75cbe52dace89ff089811d1ef61ff36f2eb07aba53cb4c26e736e",
-    "bytes": 1362
+    "sha256": "91b218c1d4aa35781b02976fab2fafa8ba06b648b1d3b59ee6365e20318c3c04",
+    "bytes": 647
   },
   {
     "path": "RELEASE.zh-CN.md",
-    "sha256": "eba7599fcc30fbfb79555460581f142bc521b5090f70d599e1f9edc0709d2be2",
-    "bytes": 1226
+    "sha256": "bf34a037cf356416d2a3ad67ffd21813365dc6c1d2e7dcebbb3f36a44997290c",
+    "bytes": 650
+  },
+  {
+    "path": "VERSIONING.en.md",
+    "sha256": "8efe56d0047c2c041ab14620cac7fbfb47f8f10743075002e2a4708ac19834b1",
+    "bytes": 1553
+  },
+  {
+    "path": "VERSIONING.zh-CN.md",
+    "sha256": "5ea094f0964db78062e396d858ec357a8e32f8887702f43bc95b97279240e191",
+    "bytes": 1640
   },
   {
     "path": "cordis.patch.yml",
@@ -61,7 +71,7 @@
   },
   {
     "path": "package.json",
-    "sha256": "2c8c9da41c2247602b33b27ed3d64b34639bd5bc7ef75703bcbe0f4068cc3178",
+    "sha256": "046e92e1d09543887f023e1bb2347360108d2130bd11f6030b177b9caf174ecd",
     "bytes": 1272
   },
   {
@@ -331,8 +341,8 @@
   },
   {
     "path": "src/client.js",
-    "sha256": "dfc4f09b12c7e0d965194e1bdc4a3859c679fa5bcadb5ffaa38eaf9a2bb77bd2",
-    "bytes": 120179
+    "sha256": "f5b164d26a7d7a9527c91bb76ba8ed5e9683e14f8e7763eca0c7b01b9c33942e",
+    "bytes": 124695
   },
   {
     "path": "src/index.js",
@@ -351,12 +361,22 @@
   },
   {
     "path": "src/store.js",
-    "sha256": "7f3f9a88e969068df3afadb19c5b2f93b72ed6244babf8a24be964bb16554b6a",
-    "bytes": 5888
+    "sha256": "00b82c62a9d71a9e427f01a2ef6f32401f6fb51a38ecdec9d67afa2ce0676bb7",
+    "bytes": 6750
   },
   {
     "path": "src/ui.js",
     "sha256": "6e1a8da7f829ce3a218886ca11b6ba8a97d49bea38ed99fd38f1878fbc46e14d",
     "bytes": 2857
+  },
+  {
+    "path": "src/updates.js",
+    "sha256": "8ea54851f7582a315741fb26048206a7de804d7d825d2877724b26f946190bb4",
+    "bytes": 15359
+  },
+  {
+    "path": "src/versioning.js",
+    "sha256": "b77f26906d26814f56e48f1ef881307f925184fe716e6aaae8e66ceaa515a8b8",
+    "bytes": 1904
   }
 ]

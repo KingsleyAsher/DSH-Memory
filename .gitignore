@@ -161,6 +161,6 @@ memory-beta-state/
 # Explicit public release outputs
 !dist/
 dist/*
-!dist/local-dsh-memory-1.0.0.tgz
+!dist/local-dsh-memory-*.tgz
 !dist/SHA256SUMS
 !dist/package-files.json

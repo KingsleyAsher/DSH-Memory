@@ -1,5 +1,10 @@
 # Changelog / 版本记录
 
+## 1.0.1 — 2026-11-04
+
+- 同步知识库的版本与更新规则；增加静默检查、同主版本正式更新自动安装和页内手动更新，无更新弹窗。
+- Adopted knowledge-base version/update rules with silent checks, same-major stable auto-install and inline manual controls.
+
 ## 1.0.0 — 2026-11-04
 
 - First complete public release based on the local beta implementation. / 基于本地测试版的首次完整公开发布。

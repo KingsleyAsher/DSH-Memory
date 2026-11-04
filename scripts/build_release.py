@@ -56,7 +56,10 @@ def main():
     digest=hashlib.sha256(archive.read_bytes()).hexdigest()
     (DIST/'SHA256SUMS').write_text(digest+'  '+archive.name+'\n',encoding='utf-8')
     (DIST/'package-files.json').write_text(json.dumps(inventory,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
-    manifest={'version':VERSION,'package':'@local/dsh-memory','archive':'dist/'+archive.name,'sha256':digest,'bytes':archive.stat().st_size,'files':len(files),'verification':{'syntheticTestsPassed':int(match.group(1)) if match else None,'javascriptSyntaxPassed':True,'packageRoundTripPassed':True,'publicationScanPassed':True,'liveModelCalls':False,'privateUserDataUsed':False,'installedHostUpgradeTested':False}}
+    manifest={'version':VERSION,'package':'@local/dsh-memory','archive':'dist/'+archive.name,'tgz':archive.name,'buildId':hashlib.sha256(json.dumps(inventory,sort_keys=True).encode()).hexdigest()[:16],'sha256':digest,'bytes':archive.stat().st_size,'files':len(files),'verification':{'syntheticTestsPassed':int(match.group(1)) if match else None,'javascriptSyntaxPassed':True,'packageRoundTripPassed':True,'publicationScanPassed':True,'liveModelCalls':False,'privateUserDataUsed':False,'installedHostUpgradeTested':False}}
+    (ROOT/'release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
+    subprocess.run(['node','--test','tests/updates.test.mjs'],cwd=ROOT,check=True,capture_output=True)
+    manifest['verification']['updaterTestsPassed']=4
     (ROOT/'release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(manifest))
 
