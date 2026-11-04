@@ -1,8 +1,8 @@
 [
   {
     "path": "CHANGELOG.md",
-    "sha256": "5559173d6bd4826c4ad384ac4076729ed950b6a8e3a6b00991078f3bc2136c63",
-    "bytes": 1344
+    "sha256": "73e9a142ef82beedfc8a33b9de2eb70ad0babf84366efb36c49b1a4b7bad8cc1",
+    "bytes": 1550
   },
   {
     "path": "GUIDE.en.md",
@@ -36,33 +36,33 @@
   },
   {
     "path": "README.md",
-    "sha256": "96edf33d3415044631f5712c12f7c9583dc76dbb85fd49d907bb1d926338b8e4",
-    "bytes": 4980
+    "sha256": "c43e11080e2ca3f7a0c6ce0e158c2c7ccda96f18fa43eec7e9c326b559061b8d",
+    "bytes": 4981
   },
   {
     "path": "README.zh-CN.md",
-    "sha256": "5a6568f221bc2189bf8a695e18bd9ba99cd7123a508dd3345f39faf466768d06",
-    "bytes": 4710
+    "sha256": "c76eac6df29332c1ce98dbf489094a6a05e084203148987d5427d4157f9e0891",
+    "bytes": 4698
   },
   {
     "path": "RELEASE.en.md",
-    "sha256": "91b218c1d4aa35781b02976fab2fafa8ba06b648b1d3b59ee6365e20318c3c04",
-    "bytes": 647
+    "sha256": "60c259db26d753b673f127ee2db54439d3f974ad4b15e34a6bdc02c472392605",
+    "bytes": 356
   },
   {
     "path": "RELEASE.zh-CN.md",
-    "sha256": "bf34a037cf356416d2a3ad67ffd21813365dc6c1d2e7dcebbb3f36a44997290c",
-    "bytes": 650
+    "sha256": "fd455523802b2a32ddc80801702071f6a67068ab48d25b550a8e1532793af21b",
+    "bytes": 348
   },
   {
     "path": "VERSIONING.en.md",
-    "sha256": "8efe56d0047c2c041ab14620cac7fbfb47f8f10743075002e2a4708ac19834b1",
-    "bytes": 1553
+    "sha256": "9ff6544fce8c1e70e9dee8603c42f0d1186078de95ad22c433d4edb88ceae7dd",
+    "bytes": 1550
   },
   {
     "path": "VERSIONING.zh-CN.md",
-    "sha256": "5ea094f0964db78062e396d858ec357a8e32f8887702f43bc95b97279240e191",
-    "bytes": 1640
+    "sha256": "48c32d315a7036cfbbb55536d1ccd8f12cd5f699fe0265a4c957cc2e67fb45d8",
+    "bytes": 1661
   },
   {
     "path": "cordis.patch.yml",
@@ -71,7 +71,7 @@
   },
   {
     "path": "package.json",
-    "sha256": "046e92e1d09543887f023e1bb2347360108d2130bd11f6030b177b9caf174ecd",
+    "sha256": "b45eb173ebc4b2bbde2b84b57bbf7a861b2003cd5fd49b9939e3fa731914bac3",
     "bytes": 1272
   },
   {
@@ -341,8 +341,8 @@
   },
   {
     "path": "src/client.js",
-    "sha256": "f5b164d26a7d7a9527c91bb76ba8ed5e9683e14f8e7763eca0c7b01b9c33942e",
-    "bytes": 124695
+    "sha256": "cb8f6a59ec8833f941fcfd1503869ef531ecc26552abdc616dc5cbb8f190fa78",
+    "bytes": 124293
   },
   {
     "path": "src/index.js",
@@ -371,8 +371,8 @@
   },
   {
     "path": "src/updates.js",
-    "sha256": "8ea54851f7582a315741fb26048206a7de804d7d825d2877724b26f946190bb4",
-    "bytes": 15359
+    "sha256": "d7b95e57053f6353f843239c54435115ab10597dfb4c8179d4a7ba03a75c4ffd",
+    "bytes": 15317
   },
   {
     "path": "src/versioning.js",

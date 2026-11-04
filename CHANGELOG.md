@@ -1,5 +1,10 @@
 # Changelog / 版本记录
 
+## 1.0.2 — 2026-11-04
+
+- 所有较新正式版、预览版和跨主版本更新均自动安装，无需手动选择。
+- All newer versions, including previews and major upgrades, install automatically.
+
 ## 1.0.1 — 2026-11-04
 
 - 同步知识库的版本与更新规则；增加静默检查、同主版本正式更新自动安装和页内手动更新，无更新弹窗。

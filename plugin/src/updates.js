@@ -5,7 +5,7 @@ import { gunzipSync } from 'node:zlib'
 import { parseKnowledgeVersion, compareKnowledgeVersions } from './versioning.js'
 
 // Manifest checks remain read-only. The client may automatically install stable
-// updates within the same major version; installation and activation stay host-managed.
+// updates across all channels and majors; installation and activation stay host-managed.
 export const UPDATE_REPOSITORY = 'https://github.com/KingsleyAsher/DSH-Memory'
 export const UPDATE_MANIFEST_URL = 'https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/release-manifest.json'
 export const UPDATE_PREVIEW_MANIFEST_URL = 'https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/preview-manifest.json'
@@ -109,9 +109,7 @@ export function createUpdateChecker({ currentVersion, fetch: fetchFn = globalThi
       return { ok: false, sourceStatus, error: '检查更新失败：相同版本的更新源摘要不一致，请稍后重试' }
     }
     const comparison = compareReleaseVersions(m.version,currentVersion)
-    const installedVersion = parseKnowledgeVersion(currentVersion, { allowLegacyPreview: true })
-    const latestVersion = parseKnowledgeVersion(m.version)
-    const autoInstallEligible = comparison > 0 && !preview && installedVersion?.channel === 'stable' && latestVersion?.channel === 'stable' && installedVersion.major === latestVersion.major
+    const autoInstallEligible = comparison > 0
     return { ok: true, currentVersion, latestVersion: m.version, channel: preview ? 'preview' : 'stable', updateAvailable: comparison > 0, autoInstallEligible, ahead: comparison < 0,
       checkedAt: new Date(now()).toISOString(), source: chosen.source.repository, sourceId: chosen.source.id, sourceName: chosen.source.name,
       sourceIds: sources.map(s => s.id), sourceStatus,
@@ -125,6 +123,8 @@ export function createUpdateChecker({ currentVersion, fetch: fetchFn = globalThi
     const result = { ...stable, currentVersion, currentChannel: parseKnowledgeVersion(currentVersion, { allowLegacyPreview: true })?.channel || 'unknown', checkedAt: new Date(now()).toISOString() }
     if (preview?.ok) result.preview = preview.available === false || stable.ok && compareReleaseVersions(preview.latestVersion, stable.latestVersion) <= 0 ? { ok: true, available: false, updateAvailable: false, sourceStatus: preview.sourceStatus } : preview
     else if (preview) { result.previewError = '预览版信息暂不可用，可稍后重新检查'; result.previewSourceStatus = preview.sourceStatus }
+    // All channels participate in automatic updates; select the newest valid release.
+    if (preview?.ok && preview.updateAvailable && (!stable.ok || compareReleaseVersions(preview.latestVersion, stable.latestVersion) > 0)) Object.assign(result, preview)
     return result
   }
   return { check({ force = false } = {}) {
@@ -223,4 +223,3 @@ export function createUpdateDownloader({ checker, cacheDir, fetch: fetchFn = glo
     },
   }
 }
-

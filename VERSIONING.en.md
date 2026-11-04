@@ -2,7 +2,7 @@
 
 Stable releases use `MAJOR.MINOR.PATCH`; previews use `MAJOR.MINOR-betaN`. Ordering compares major and minor numerically, ranks stable above preview within the same minor, then compares patch or beta number. Legacy `MAJOR.MINOR.PATCH-betaN` is accepted only for installed historical versions.
 
-Checks run about 15 seconds after activation and every six hours thereafter, reading stable and preview feeds. Stable installations may automatically install newer stable releases within the same major. Major upgrades, preview switches and preview-to-stable changes require a choice in the Memory page. No automatic downgrade is performed.
+Checks run about 15 seconds after activation and every six hours thereafter, reading stable and preview feeds. All newer valid releases install automatically, including major upgrades and switches between preview and stable. Both feeds participate in version ordering; the newest valid release wins. No automatic downgrade is performed.
 
 There are no update popups. Status, errors, install controls and restart instructions appear inline in Memory. Mandatory host-owned permissions or installation UI remain under DSH control. Failed checks preserve the installed version. A manual check button remains available.
 

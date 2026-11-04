@@ -116,9 +116,9 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
     async function checkUpdate(force=false){
       try{
         const result=await api('updates.check',{force});updateState.release=result;
-        const pending=JSON.parse(localStorage.getItem('dsh-memory.install')||'null');
-        if(pending?.version===result.currentVersion)localStorage.removeItem('dsh-memory.install');
-        updateState.message=result.ok?(result.updateAvailable?'发现正式版 '+result.latestVersion:'当前版本 '+result.currentVersion):result.error;
+        let pending=JSON.parse(localStorage.getItem('dsh-memory.install')||'null');
+        if(pending?.version===result.currentVersion){localStorage.removeItem('dsh-memory.install');pending=null;}
+        updateState.message=result.ok?(result.updateAvailable?'发现新版本 '+result.latestVersion:'当前版本 '+result.currentVersion):result.error;
         updateEvent();
         if(result.ok&&result.autoInstallEligible&&!pending)await runUpdate(result.latestVersion);
         else if(pending&&pending.version!==result.currentVersion)updateState.message='已有安装记录，请刷新或重启 DSH；状态可在宿主插件管理器查看';
@@ -129,9 +129,7 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
       const release=updateState.release;
       return e('div',{className:'dm-toolbar',style:{margin:'8px 24px'},'aria-label':'版本与更新'},
         e('span',{role:'status'},updateState.message||'版本与更新'),
-        e('button',{className:'dm-btn',disabled:updateState.busy,onClick:()=>checkUpdate(true)},'检查更新'),
-        release?.updateAvailable&&!release.autoInstallEligible&&e('button',{className:'dm-btn',disabled:updateState.busy,onClick:()=>runUpdate(release.latestVersion)},'安装正式版 '+release.latestVersion),
-        release?.preview?.updateAvailable&&e('button',{className:'dm-btn',disabled:updateState.busy,onClick:()=>runUpdate(release.preview.latestVersion)},'安装预览版 '+release.preview.latestVersion));
+        e('button',{className:'dm-btn',disabled:updateState.busy,onClick:()=>checkUpdate(true)},'检查更新'));
     }
 
     function MemoryPage() {
