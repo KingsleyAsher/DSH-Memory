@@ -49,3 +49,8 @@ Report versions, error text and a minimal synthetic reproduction. Do not upload 
 Open Memory → Details for the running version, last check, published version, source status and all GitHub/Gitee/GitCode repository links. Manual checks share the automatic update flow: about 15 seconds after startup and every six hours, eligible updates are installed through the host manager. Offline checks do not hide local version information or falsely report that the current version is latest.
 
 A proactive write may only be confirmed when state=saved and can_confirm_saved=true. Unsuccessful and partial submissions fail the tool; use the per-item correction hints and a fresh batch. A completed transaction does not establish a saved memory. These guards do not guarantee every model's future wording.
+
+## 1.0.5: memory across tool continuations
+
+Applicable agreements remain available after tools return. A tool-only step recalls against the latest real user task from session history while respecting deletion, withdrawal, project scope and task changes. Applicable user preferences should guide the plan and remaining actions; historical quotations are not new commands. Saving and recalling a preference do not prove that a model completed the requested action: check the resulting task or artifact.
+

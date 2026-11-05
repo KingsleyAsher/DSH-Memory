@@ -30,3 +30,7 @@ These stages describe the implementation lineage, not a claim that each internal
 ## Remaining work
 
 Internal small-sample extraction results are not published as product accuracy. Private data is not released as a reproduction dataset. Further work includes broader synthetic end-to-end evaluations, host lifecycle verification, custom-compactor support and measured long-term recall quality and overhead. Graphs, caches and multiple representations do not independently establish large-library retrieval performance.
+
+## 1.0.5: memory during tool continuation (2026-11-05)
+
+Use the real user task in session history to prevent empty recall snapshots after tools return. Re-query each step so deletion and withdrawal remain visible. Synthetic continuation and persisted-worker checks complement the existing release checks; the 1.0.4 details page, receipts and shared scopes remain. No private-user data or real-model action was verified; see the release notes.

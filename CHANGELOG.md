@@ -1,5 +1,13 @@
 # Changelog / 版本记录
 
+## 1.0.5 — 2026-11-05
+
+- 工具续步从会话历史取得真实用户任务并重新召回，防止空快照覆盖已保存约定；删除、撤回和任务切换仍生效。
+- 明确当前适用的用户约定应落实到后续步骤，保持条件、权限及历史引文边界。
+- 同步中英文文档、公开发布包及更新清单；保留自动更新与严格保存回执。
+- Recall the current user task from session history during tool-only continuation, without accepting another plugin's user-role message as that task.
+- Preserve withdrawal and scope checks; distinguish applicable user agreements from historical quotations.
+
 ## 1.0.4 — 2026-11-05
 
 - 新增详情页：运行版本、手动检查更新、各更新源状态及 GitHub/Gitee/GitCode 仓库链接；保留自动检查和安装。

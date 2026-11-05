@@ -1,18 +1,18 @@
 [
   {
     "path": "CHANGELOG.md",
-    "sha256": "e36b697ab04be153edf78532e30d0f4930d3f07ebb6980a4697a2c0a8576562c",
-    "bytes": 2445
+    "sha256": "436a8525205758dc3fd7f4ff569f8a8731949f50be9d0b956af0cd277547b511",
+    "bytes": 3091
   },
   {
     "path": "GUIDE.en.md",
-    "sha256": "9b0e70e54753e5988480e5fdb6b722d5035f259b2373186b4ed2337d49773fe7",
-    "bytes": 5296
+    "sha256": "af658c1a0a6c08e6c2bfc48431450a4d5c9f63453386c310753ed252928ef1eb",
+    "bytes": 5799
   },
   {
     "path": "GUIDE.zh-CN.md",
-    "sha256": "b95f311ff031d6fcf2e8e18f7bce62143edda5ca7148fddea204feace9b36ec4",
-    "bytes": 5285
+    "sha256": "5d34eda609e1865538d78adb5bdfa188527068789934c7eab154de159c7f9bfb",
+    "bytes": 5783
   },
   {
     "path": "LICENSE",
@@ -21,13 +21,13 @@
   },
   {
     "path": "PROJECT-RECORD.en.md",
-    "sha256": "0d636e15c0e79943f67618e4bf1c87069d6e65b82959800500864ecfa7e5813a",
-    "bytes": 2869
+    "sha256": "7b558a94d8f49d1fb1818f5323413258d228c01c73874a8f8aa2840fdaf26fb8",
+    "bytes": 3313
   },
   {
     "path": "PROJECT-RECORD.zh-CN.md",
-    "sha256": "cf66337f6fd730149cdca8538b4c2744579bfc284928fa22f4505becb9e467db",
-    "bytes": 2587
+    "sha256": "c4c48f321d50fe457688d314d7b327eef0f14d7474498a366a728f0e55feddc9",
+    "bytes": 2982
   },
   {
     "path": "PUBLICATION.md",
@@ -36,33 +36,33 @@
   },
   {
     "path": "README.md",
-    "sha256": "5678093674fad0e27177d4f775bed1626317061da2d73b783f841f25c8f91e53",
-    "bytes": 5357
+    "sha256": "f26b1c850db04e2d4c38b6157019c14f0eecc27d87e9e75ebc828d0aa45fa38d",
+    "bytes": 5399
   },
   {
     "path": "README.zh-CN.md",
-    "sha256": "941ee91130a065cc76aec76a7dbabdd0fd259bf987a6b84a33dc4f345dbc4c99",
+    "sha256": "914292685213ac61f8e49a372d726fe76faed0a4ec3ad589c87a4f7bf0378611",
     "bytes": 5286
   },
   {
     "path": "RELEASE.en.md",
-    "sha256": "de855ce3b5988c86f09f0756cdb96e8e11b26c9a6124bd28447051a1298b51ac",
-    "bytes": 1767
+    "sha256": "f8fb7fac939d7ad1e3d2ac7c749e0c5b04cade9bc805c7725229318a5d307f9e",
+    "bytes": 1710
   },
   {
     "path": "RELEASE.zh-CN.md",
-    "sha256": "cfeca25ad35a9b8e63edc490eee9c311d9fa86174001a21f5674fd7f869f7bd5",
-    "bytes": 1418
+    "sha256": "25bfa75fd94538e59d05af4f98efd4887b9c952df551b5518aa16f4f55b3b286",
+    "bytes": 1521
   },
   {
     "path": "VERSIONING.en.md",
-    "sha256": "efb79b454761f1425ea0490b8a57ad6b802c884b0d99e820c48b99e5d07d1fde",
-    "bytes": 1910
+    "sha256": "767c786026c3450b0984c5d8b66aadda39587a48cf24e400822c7c5fe467b1ae",
+    "bytes": 2136
   },
   {
     "path": "VERSIONING.zh-CN.md",
-    "sha256": "f6dad7fd533926bd0abc607b9dc92a576e3d4b7890c95f2aee24c10fb4056ac1",
-    "bytes": 2003
+    "sha256": "d0a4174a95cce026e7281a3a9a10b3b195069ae19d02fb7c25d15491281c1887",
+    "bytes": 2202
   },
   {
     "path": "cordis.patch.yml",
@@ -71,7 +71,7 @@
   },
   {
     "path": "package.json",
-    "sha256": "433321807592c3e5325af32a56723487b408436775d9160c0bba6844053626b5",
+    "sha256": "f06cfd5660d0add6537ba3b01304b6f78769c28c405c055fc0f754fd46fdf7a8",
     "bytes": 1272
   },
   {
@@ -361,8 +361,8 @@
   },
   {
     "path": "src/runtime.js",
-    "sha256": "47e20c270a962945a094b245fb80c97ca520d250d5ea325b8128661e91503f55",
-    "bytes": 13024
+    "sha256": "3670cbaf20eee3d32ffc79cd0f26cd32c7094c963978ba331cb4a94b86b49a88",
+    "bytes": 13621
   },
   {
     "path": "src/store.js",
