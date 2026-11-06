@@ -258,6 +258,7 @@ obligations是原文中容易漏掉的明确要求；保存这些限制的完整
                     message='本次提交已保存，可按具体条目确认；未提交来源仍待检查。' if confirmed else
                     '本次记忆未完整保存，禁止声称已记住。根据results修正后使用下一步新batch_id重试；原文已保留。',
                     repair_hints=dict(fact_provenance='f.v必须逐字摘取e引用的原文，不能润色；需要整句时保留原标点。',
+                        path_requires_literal='f=path时v只能是原文中的路径字面量，不含说明、引号或条件。默认位置、适用条件等完整约定另用f=rule逐字保存，不能把整句填进path。',
                         operation_record_required='assert/replace必须设置n，例如F0引用f[0]，L0引用p[0]。'))
             if summary is not None:out.update(continuation_summary=summary,can_compact=not any(r['state']!='saved' for r in results))
             self.db.execute("UPDATE memory_flow_batches SET state='committed',result=? WHERE id=?",(encoded(out),batch_id))

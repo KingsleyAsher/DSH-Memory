@@ -31,9 +31,9 @@ def main():
     files = {name:data.replace(b'\r\n',b'\n') for name,data in files.items()}
     for name, data in files.items(): scan(name,data)
     # Scan the additional public sources, including tests and release tooling.
-    for directory in ['tests','scripts']:
+    for directory in ['tests','scripts','plugin-ui']:
         for p in (ROOT/directory).rglob('*'):
-            if p.is_file() and p.suffix in {'.py','.mjs','.js'} and '__pycache__' not in p.parts:
+            if p.is_file() and p.suffix in {'.py','.mjs','.js','.html','.css'} and '__pycache__' not in p.parts:
                 scan(p.relative_to(ROOT).as_posix(),p.read_bytes())
     for p in (ROOT/'plugin/src').glob('*.js'):
         subprocess.run(['node','--check',str(p)],check=True,capture_output=True)
@@ -63,10 +63,14 @@ def main():
     (ROOT/'release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     subprocess.run(['node','--test','tests/updates.test.mjs'],cwd=ROOT,check=True,capture_output=True)
     manifest['verification']['updaterTestsPassed']=6
-    for filename in ['tests/plugin_details.mjs','tests/runtime_write_receipt.mjs','tests/runtime_recall_continuation.mjs']:
+    for filename in ['tests/plugin_details.mjs','tests/runtime_write_receipt.mjs','tests/runtime_recall_continuation.mjs','tests/runtime_pure_exclusion.mjs','tests/runtime_wechat_scopes.mjs']:
         subprocess.run(['node',filename],cwd=ROOT,check=True,capture_output=True)
     manifest['verification']['detailsAndReceiptChecksPassed']=True
     manifest['verification']['toolContinuationRecallPassed']=True
+    manifest['verification']['failedSubmissionRetryPassed']=True
+    manifest['verification']['pureExclusionPassed']=True
+    manifest['verification']['conversationIsolationPassed']=True
+    manifest['verification']['installedHostUpgradeTested']=False
     (ROOT/'release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(manifest))
 

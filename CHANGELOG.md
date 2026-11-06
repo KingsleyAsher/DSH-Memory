@@ -1,5 +1,15 @@
 # Changelog / 版本记录
 
+## 1.0.8 — 2026-11-07
+
+- 修复失败提交复用已锁定批次的问题；新批次重试并保留首次回答不可改写保护，补充路径字面量提示。
+- 关系网标签固定位置，遮挡时虚化，移除文字避让和牵引线。
+- 汇总本地 1.0.6/1.0.7：跨预设统一记忆所有者、纯净排除、微信会话作用域及模型推断风格项目存储；这些中间版本未单独公开发布。
+- Fix corrected submission retries with fresh contracts; retain source validation and immutable old answers.
+- Keep graph labels stationary relative to their nodes and blur occluded text.
+- Consolidate cross-preset ownership, memory exclusion and optional isolated conversation/style storage.
+- Synthetic validation only; installed-host upgrade and live graph appearance remain unverified.
+
 ## 1.0.5 — 2026-11-05
 
 - 工具续步从会话历史取得真实用户任务并重新召回，防止空快照覆盖已保存约定；删除、撤回和任务切换仍生效。

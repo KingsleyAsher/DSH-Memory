@@ -1,0 +1,9 @@
+html,body{height:100%;overflow:hidden}
+#dsh-memory-workbench{height:100vh;display:flex;flex-direction:column;overflow:hidden}
+#dsh-memory-workbench>.mw-filters,#dsh-memory-workbench>.mw-bottom{flex:0 0 auto}
+#dsh-memory-workbench .mw-main{flex:1 1 0;min-height:0;align-items:stretch}
+#dsh-memory-workbench .mw-explore{height:100%;min-height:0;overflow:hidden}
+#dsh-memory-workbench .mw-map{height:auto;min-height:0;flex:1 1 0}
+#dsh-memory-workbench .mw-detail{min-height:0;max-height:none;overflow:auto}
+#dsh-memory-workbench .mw-table-view{overflow:auto;min-height:0}
+@media(max-width:820px){#dsh-memory-workbench .mw-main{display:flex;flex-direction:column}#dsh-memory-workbench .mw-explore{flex:1 1 0}#dsh-memory-workbench .mw-detail{max-height:30vh;flex:0 0 auto}}

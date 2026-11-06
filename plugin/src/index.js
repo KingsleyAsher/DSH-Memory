@@ -1,12 +1,15 @@
 import { BasicCompactionEngine } from '@deepseek-ai/dsh-compaction-basic';
 import { defineTool } from '@deepseek-ai/dsh-tools';
 import { BlockAssembler, createUserMessage } from '@deepseek-ai/dsh-llm';
-import { MemoryRuntime } from './runtime.js';
+import { MemoryRuntime, automaticRuntimes } from './runtime.js';
 
 export const name = 'dsh-memory';
 export const inject = ['memoryStore', 'agents', 'tools', 'systemPrompt', 'llm', 'sessions', 'tokenMeter'];
 export function apply(ctx, config = {}) {
   const bridge = ctx.memoryStore.bridge;
+  // Reuse the automatic owner when switching into the optional memory preset.
+  const automatic = automaticRuntimes.get(bridge);
+  if (automatic) return automatic;
   const runtime = new MemoryRuntime(ctx, bridge, { defineTool, createUserMessage }, config);
   class MemoryCompactionEngine extends BasicCompactionEngine {
     summarize(input, agent, signal) { return runtime.summarize(this, input, agent, signal, BlockAssembler); }
