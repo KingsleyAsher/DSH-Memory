@@ -1,5 +1,12 @@
 # Changelog / 版本记录
 
+## 1.0.10 — 2026-11-07
+
+- 兼容 DSH 0.2.1-rc.5 / 0.2.2-rc.1 与 Cordis 4.0.5 / 4.1.0；移除对单一宿主预览版本的精确锁定，保留明确的后续系列上界。
+- 新增双宿主离线检查：真实工具循环、持久化、压缩、跨会话召回、项目隔离及恢复；不迁移或清空记忆数据。
+- Admit the verified DSH 0.2.1/0.2.2 and Cordis 4.0/4.1 series without compatibility exemptions.
+- Add a reusable offline host matrix test; preserve existing storage and memory behavior.
+
 ## 1.0.9 — 2026-11-07
 
 - 本地记忆先显示，联动记录后台加载；合并重复刷新和并发联动请求。

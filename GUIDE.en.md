@@ -80,3 +80,13 @@ The management-only loader coalesces concurrent requests per session, retains at
 Validation: an isolated browser page with synthetic records and a fixed three-second linked-service delay displayed local records in 96 ms versus 3489 ms before the change. This is one measurement of that scenario, not a live-host speed guarantee. Linked records later appeared, project scope switching passed and no page runtime errors occurred. New checks cover coalescing, session isolation, invalidation, expiry, offline/incomplete snapshots and provider removal; existing release regressions and archive/publication checks remain enabled. No private database, chat or machine-specific test materials are published. Performance after installing and fully restarting the live Host remains unverified.
 
 Compatibility is unchanged from 1.0.8; see package.json peerDependencies. Install local-dsh-memory-1.0.9.tgz through the DSH plugin manager, fully exit including the tray process, reopen and confirm version 1.0.9 in Memory details. Build identity, digest and test counts are recorded in release-manifest.json.
+
+## 1.0.10 host compatibility
+
+Fix plugin admission after DSH upgrades. Required DSH packages now accept the 0.2.1 series from rc.5 and the 0.2.2 series from rc.1. Cordis accepts ~4.0.5 or ~4.1.0. DSH 0.2.3 and Cordis 4.2 are not automatically admitted.
+
+Isolated checks use official 0.2.1-rc.5 / Cordis 4.0.5 modules and the installed 0.2.2-rc.1 / Cordis 4.1.0 archive. Both exercise plugin loading, the real Agent tool loop, persistence, same-call compaction, cross-session recall, project isolation, worker restart and pending-work recovery. Model output is an offline fixture, not a paid or real-model evaluation. The newer host fixture loads its required native tool executor normally; the memory plugin does not replace the user's executor.
+
+The data directory and database format remain unchanged. Existing memories, pure exclusion, strict save receipts and progressive management-page loading are preserved. A reusable dual-host test is included. See release-manifest.json for exact checks and archive identity. Full desktop-process restart and live activation remain to be confirmed.
+
+Install local-dsh-memory-1.0.10.tgz through the DSH plugin manager, fully exit including the tray process, reopen and confirm 1.0.10 in Memory details. The fix uses supported dependency declarations instead of bypassing Host compatibility checks.

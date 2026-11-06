@@ -1,11 +1,11 @@
 {
-  "version": "1.0.9",
+  "version": "1.0.10",
   "package": "@local/dsh-memory",
-  "archive": "dist/local-dsh-memory-1.0.9.tgz",
-  "tgz": "local-dsh-memory-1.0.9.tgz",
-  "buildId": "5477f9f6317fe648",
-  "sha256": "79ae4b7c7554c9fb2c295b26202aa06325a46012462afb43e95562f519ee9d3d",
-  "bytes": 298981,
+  "archive": "dist/local-dsh-memory-1.0.10.tgz",
+  "tgz": "local-dsh-memory-1.0.10.tgz",
+  "buildId": "cd1bee7505e1c875",
+  "sha256": "f04e3937272e56ba418dae91b99bfadcee9d543983764ec88d11c2a90b53b5d1",
+  "bytes": 300068,
   "files": 77,
   "verification": {
     "syntheticTestsPassed": 16,
@@ -21,6 +21,44 @@
     "failedSubmissionRetryPassed": true,
     "pureExclusionPassed": true,
     "conversationIsolationPassed": true,
-    "nonBlockingMemoryListPassed": true
+    "nonBlockingMemoryListPassed": true,
+    "hostRuntimeMatrix": [
+      {
+        "hostVersion": "0.2.1-rc.5",
+        "cordisVersion": "4.0.5",
+        "passed": 9,
+        "checks": [
+          "packaged_opt_in_preset_real_loader_activation",
+          "real_loop_proactive_submission",
+          "persistent_core_write",
+          "one_call_compaction_gap_fill_and_durable_checkpoint",
+          "cross_session_automatic_recall",
+          "workspace_isolation",
+          "exit_restart_and_same_workspace_backlog_resume",
+          "foreign_session_submission_rejected",
+          "worker_crash_auto_restart_preserves_memory_and_backlog"
+        ],
+        "fixture_stream_calls": 4,
+        "external_model_calls": 0
+      },
+      {
+        "hostVersion": "0.2.2-rc.1",
+        "cordisVersion": "4.1.0",
+        "passed": 9,
+        "checks": [
+          "packaged_opt_in_preset_real_loader_activation",
+          "real_loop_proactive_submission",
+          "persistent_core_write",
+          "one_call_compaction_gap_fill_and_durable_checkpoint",
+          "cross_session_automatic_recall",
+          "workspace_isolation",
+          "exit_restart_and_same_workspace_backlog_resume",
+          "foreign_session_submission_rejected",
+          "worker_crash_auto_restart_preserves_memory_and_backlog"
+        ],
+        "fixture_stream_calls": 4,
+        "external_model_calls": 0
+      }
+    ]
   }
 }

@@ -1,4 +1,4 @@
-# DSH Memory 1.0.9
+# DSH Memory 1.0.10
 
 面向 DeepSeek Harness 的长期记忆插件。将值得复用的偏好、约束和项目事实保存为带来源的记录，在后续对话中按需召回，并支持更正、撤回、人工管理与可选知识库联动。
 
@@ -8,23 +8,23 @@
 
 - [项目与演进记录](PROJECT-RECORD.zh-CN.md)：设计目标、架构、阶段演进与后续方向。
 - [使用说明](GUIDE.zh-CN.md)：安装、配置、记忆范围、知识库联动及排障。
-- [发布说明](RELEASE.zh-CN.md)：1.0.9 的交付范围、兼容要求和验证边界。
+- [发布说明](RELEASE.zh-CN.md)：1.0.10 的交付范围、兼容要求和验证边界。
 - [版本记录](CHANGELOG.md)：公开版本的变化。
 
 ## 当前版本
 
-当前公开版本为 **1.0.9**，插件包名为 `@local/dsh-memory`。基于此前的本地测试版整理发布，保留存储路径与预设内部标识，以延续已有数据和引用。正式版本号不代表模型提炼零错误或任意宿主版本兼容。
+当前公开版本为 **1.0.10**，插件包名为 `@local/dsh-memory`。基于此前的本地测试版整理发布，保留存储路径与预设内部标识，以延续已有数据和引用。正式版本号不代表模型提炼零错误或任意宿主版本兼容。
 
 ## 下载
 
-- [Gitee 国内下载](https://gitee.com/KingsleyAsher/DSH-Memory/raw/main/dist/local-dsh-memory-1.0.9.tgz)
-- [GitCode 国内下载](https://api.gitcode.com/api/v5/repos/KingsleyAsher/DSH-Memory/raw/dist/local-dsh-memory-1.0.9.tgz?ref=main)
+- [Gitee 国内下载](https://gitee.com/KingsleyAsher/DSH-Memory/raw/main/dist/local-dsh-memory-1.0.10.tgz)
+- [GitCode 国内下载](https://api.gitcode.com/api/v5/repos/KingsleyAsher/DSH-Memory/raw/dist/local-dsh-memory-1.0.10.tgz?ref=main)
 
 插件并发检查 Gitee、GitCode 和 GitHub，按最新版本选择并优先使用国内源；镜像可能延迟，下载失败自动切换。
 
-- [1.0.9 Release 与安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.9)
-- [直接下载安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.9/local-dsh-memory-1.0.9.tgz)
-- [仓库内安装包](dist/local-dsh-memory-1.0.9.tgz) · [SHA-256 校验](dist/SHA256SUMS)
+- [1.0.10 Release 与安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.10)
+- [直接下载安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.10/local-dsh-memory-1.0.10.tgz)
+- [仓库内安装包](dist/local-dsh-memory-1.0.10.tgz) · [SHA-256 校验](dist/SHA256SUMS)
 
 ## 插件能做什么
 
@@ -47,7 +47,7 @@ python -m pip install numpy
 在 DSH 插件管理器中添加以下安装源，或选择下载后的本地 `.tgz` 文件：
 
 ```text
-https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.9.tgz
+https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.10.tgz
 ```
 
 启用后打开左侧“记忆”（窄窗口可能收入“更多”）或会话中的记忆视图。宿主要求重新加载时，完全退出含托盘进程后重启。现有预设在创建或恢复智能体时接入记忆能力；也保留独立“DSH 记忆”预设。
@@ -60,7 +60,7 @@ https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-m
 
 ## 验证与限制
 
-本版本提供合成数据的作用域、待确认候选及显式记忆测试，包文件清单与摘要也可核验。此前联动验证使用隔离工作进程和合成知识库，不代表真实个人资料或长期模型准确率测试。1.0.9 发布检查结果见 [发布清单](release-manifest.json)。
+本版本提供合成数据的作用域、待确认候选及显式记忆测试，包文件清单与摘要也可核验。此前联动验证使用隔离工作进程和合成知识库，不代表真实个人资料或长期模型准确率测试。1.0.10 发布检查结果见 [发布清单](release-manifest.json)。
 
 图像、音频和附件原文提取不在本插件内。自定义压缩引擎、复杂跨项目指代和任意长上下文质量尚无普遍保证。宿主关闭后只保留待办，不会继续后台推理。更新遵循[版本与更新规则](VERSIONING.zh-CN.md)：所有较新版本自动安装，包括跨主版本和预览版，状态仅在页内显示，无更新弹窗。此版本不提供跨设备同步。
 
@@ -98,3 +98,13 @@ python -m unittest discover -s tests -p "test_*.py"
 验证：浏览器隔离页面使用虚构记录与固定三秒联动延迟，本地记录显示时间从 3489 毫秒降到 96 毫秒；这是该场景的一次测量，不是实际宿主耗时承诺。联动记录后续加载、项目范围切换通过，未发现页面运行错误。新增测试覆盖请求合并、会话隔离、缓存失效、过期、失败、不完整快照和服务移除；发布检查继续覆盖已有回归、包内容与公开边界。未发布私人数据库、聊天或本机测试资料。真实宿主安装并完整重启后的耗时未验证。
 
 兼容要求沿用 1.0.8，以 package.json 的 peerDependencies 为准。通过 DSH 插件管理器安装 local-dsh-memory-1.0.9.tgz，完全退出宿主（含托盘）再打开，并在记忆详情中确认版本 1.0.9。构建号、摘要与测试数量见 release-manifest.json。
+
+## 1.0.10 宿主兼容修复
+
+修复升级 DSH 后插件被精确版本依赖阻止加载的问题。DSH 与所需官方包现在接受 0.2.1（从 rc.5 起）和 0.2.2（从 rc.1 起）系列，Cordis 接受 ~4.0.5 或 ~4.1.0；不自动放行 0.2.3 或 Cordis 4.2。
+
+分别使用官方 0.2.1-rc.5 / Cordis 4.0.5 和本机安装归档中的 0.2.2-rc.1 / Cordis 4.1.0 运行隔离检查。两组均覆盖真实插件装载、Agent 工具调用、持久化、同次压缩、跨会话召回、项目隔离、工作进程重启与旧待办恢复；模型输出使用离线桩，不是付费或真实模型验证。新版独立的原生工具执行器由测试宿主正常加载，记忆插件不替换用户的执行器。
+
+记忆数据目录与数据库格式保持不变，升级保留既有记录；纯净模式排除、严格保存回执和管理页面分阶段加载继续保留。新增可复用的双宿主检查脚本。精确检查结果和安装包摘要见 release-manifest.json。真实桌面进程完整重启后的运行状态仍需确认。
+
+通过 DSH 插件管理器安装 local-dsh-memory-1.0.10.tgz，完全退出 DSH（含托盘）再打开，在记忆详情中确认 1.0.10。本版修正兼容声明，不依赖关闭宿主兼容检查或添加强制豁免。
