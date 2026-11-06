@@ -1,6 +1,6 @@
 """Build an allowlisted, deterministic npm-compatible archive from public source."""
 from pathlib import Path
-import gzip, hashlib, io, json, re, subprocess, sys, tarfile
+import argparse, gzip, hashlib, io, json, re, subprocess, sys, tarfile
 
 ROOT = Path(__file__).resolve().parents[1]
 DIST = ROOT / 'dist'
@@ -17,6 +17,9 @@ def scan(name, data):
             raise ValueError('Publication scan failed: '+name)
 
 def main():
+    parser=argparse.ArgumentParser()
+    parser.add_argument('--test-host',action='append',default=[])
+    args=parser.parse_args()
     files = {}
     for directory, prefix, suffixes in [('plugin/src','src',{'.js'}),('memory_core','python/memory_core',{'.py','.mjs'})]:
         for p in sorted((ROOT/directory).rglob('*')):
@@ -72,6 +75,16 @@ def main():
     manifest['verification']['conversationIsolationPassed']=True
     manifest['verification']['nonBlockingMemoryListPassed']=True
     manifest['verification']['installedHostUpgradeTested']=False
+    if args.test_host:
+        matrix=[]
+        for host in args.test_host:
+            package=Path(host)/'node_modules/@local/dsh-memory'
+            for name,data in files.items():
+                if name.startswith(('src/','python/')) or name=='package.json':
+                    assert (package/name).read_bytes().replace(b'\r\n',b'\n')==data, 'Host fixture differs from release: '+name
+            result=subprocess.run(['node','tests/host_runtime_smoke.mjs',host],cwd=ROOT,check=True,capture_output=True,text=True)
+            matrix.append(json.loads(result.stdout.strip().splitlines()[-1]))
+        manifest['verification']['hostRuntimeMatrix']=matrix
     (ROOT/'release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(manifest))
 
