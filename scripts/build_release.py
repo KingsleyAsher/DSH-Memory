@@ -63,13 +63,14 @@ def main():
     (ROOT/'release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     subprocess.run(['node','--test','tests/updates.test.mjs'],cwd=ROOT,check=True,capture_output=True)
     manifest['verification']['updaterTestsPassed']=6
-    for filename in ['tests/plugin_details.mjs','tests/runtime_write_receipt.mjs','tests/runtime_recall_continuation.mjs','tests/runtime_pure_exclusion.mjs','tests/runtime_wechat_scopes.mjs']:
+    for filename in ['tests/plugin_details.mjs','tests/runtime_write_receipt.mjs','tests/runtime_recall_continuation.mjs','tests/runtime_pure_exclusion.mjs','tests/runtime_wechat_scopes.mjs','tests/memory_list_loading.mjs']:
         subprocess.run(['node',filename],cwd=ROOT,check=True,capture_output=True)
     manifest['verification']['detailsAndReceiptChecksPassed']=True
     manifest['verification']['toolContinuationRecallPassed']=True
     manifest['verification']['failedSubmissionRetryPassed']=True
     manifest['verification']['pureExclusionPassed']=True
     manifest['verification']['conversationIsolationPassed']=True
+    manifest['verification']['nonBlockingMemoryListPassed']=True
     manifest['verification']['installedHostUpgradeTested']=False
     (ROOT/'release-manifest.json').write_text(json.dumps(manifest,indent=2)+'\n',encoding='utf-8')
     print(json.dumps(manifest))

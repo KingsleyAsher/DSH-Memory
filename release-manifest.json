@@ -1,11 +1,11 @@
 {
-  "version": "1.0.8",
+  "version": "1.0.9",
   "package": "@local/dsh-memory",
-  "archive": "dist/local-dsh-memory-1.0.8.tgz",
-  "tgz": "local-dsh-memory-1.0.8.tgz",
-  "buildId": "d89690791734e24d",
-  "sha256": "fa3b36f77bc6f281bdcbdd8fb1e4859cc8b4db249be0ec599af558fde000b47f",
-  "bytes": 296761,
+  "archive": "dist/local-dsh-memory-1.0.9.tgz",
+  "tgz": "local-dsh-memory-1.0.9.tgz",
+  "buildId": "5477f9f6317fe648",
+  "sha256": "79ae4b7c7554c9fb2c295b26202aa06325a46012462afb43e95562f519ee9d3d",
+  "bytes": 298981,
   "files": 77,
   "verification": {
     "syntheticTestsPassed": 16,
@@ -20,6 +20,7 @@
     "toolContinuationRecallPassed": true,
     "failedSubmissionRetryPassed": true,
     "pureExclusionPassed": true,
-    "conversationIsolationPassed": true
+    "conversationIsolationPassed": true,
+    "nonBlockingMemoryListPassed": true
   }
 }
