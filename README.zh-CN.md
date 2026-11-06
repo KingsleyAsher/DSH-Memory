@@ -1,4 +1,4 @@
-# DSH Memory 1.0.5
+# DSH Memory 1.0.8
 
 面向 DeepSeek Harness 的长期记忆插件。将值得复用的偏好、约束和项目事实保存为带来源的记录，在后续对话中按需召回，并支持更正、撤回、人工管理与可选知识库联动。
 
@@ -8,23 +8,23 @@
 
 - [项目与演进记录](PROJECT-RECORD.zh-CN.md)：设计目标、架构、阶段演进与后续方向。
 - [使用说明](GUIDE.zh-CN.md)：安装、配置、记忆范围、知识库联动及排障。
-- [发布说明](RELEASE.zh-CN.md)：1.0.5 的交付范围、兼容要求和验证边界。
+- [发布说明](RELEASE.zh-CN.md)：1.0.8 的交付范围、兼容要求和验证边界。
 - [版本记录](CHANGELOG.md)：公开版本的变化。
 
 ## 当前版本
 
-当前公开版本为 **1.0.5**，插件包名为 `@local/dsh-memory`。基于此前的本地测试版整理发布，保留存储路径与预设内部标识，以延续已有数据和引用。正式版本号不代表模型提炼零错误或任意宿主版本兼容。
+当前公开版本为 **1.0.8**，插件包名为 `@local/dsh-memory`。基于此前的本地测试版整理发布，保留存储路径与预设内部标识，以延续已有数据和引用。正式版本号不代表模型提炼零错误或任意宿主版本兼容。
 
 ## 下载
 
-- [Gitee 国内下载](https://gitee.com/KingsleyAsher/DSH-Memory/raw/main/dist/local-dsh-memory-1.0.5.tgz)
-- [GitCode 国内下载](https://api.gitcode.com/api/v5/repos/KingsleyAsher/DSH-Memory/raw/dist/local-dsh-memory-1.0.5.tgz?ref=main)
+- [Gitee 国内下载](https://gitee.com/KingsleyAsher/DSH-Memory/raw/main/dist/local-dsh-memory-1.0.8.tgz)
+- [GitCode 国内下载](https://api.gitcode.com/api/v5/repos/KingsleyAsher/DSH-Memory/raw/dist/local-dsh-memory-1.0.8.tgz?ref=main)
 
 插件并发检查 Gitee、GitCode 和 GitHub，按最新版本选择并优先使用国内源；镜像可能延迟，下载失败自动切换。
 
-- [1.0.5 Release 与安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.5)
-- [直接下载安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.5/local-dsh-memory-1.0.5.tgz)
-- [仓库内安装包](dist/local-dsh-memory-1.0.5.tgz) · [SHA-256 校验](dist/SHA256SUMS)
+- [1.0.8 Release 与安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.8)
+- [直接下载安装包](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.8/local-dsh-memory-1.0.8.tgz)
+- [仓库内安装包](dist/local-dsh-memory-1.0.8.tgz) · [SHA-256 校验](dist/SHA256SUMS)
 
 ## 插件能做什么
 
@@ -47,7 +47,7 @@ python -m pip install numpy
 在 DSH 插件管理器中添加以下安装源，或选择下载后的本地 `.tgz` 文件：
 
 ```text
-https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.5.tgz
+https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.8.tgz
 ```
 
 启用后打开左侧“记忆”（窄窗口可能收入“更多”）或会话中的记忆视图。宿主要求重新加载时，完全退出含托盘进程后重启。现有预设在创建或恢复智能体时接入记忆能力；也保留独立“DSH 记忆”预设。
@@ -60,7 +60,7 @@ https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-m
 
 ## 验证与限制
 
-本版本提供合成数据的作用域、待确认候选及显式记忆测试，包文件清单与摘要也可核验。此前联动验证使用隔离工作进程和合成知识库，不代表真实个人资料或长期模型准确率测试。1.0.5 发布检查结果见 [发布清单](release-manifest.json)。
+本版本提供合成数据的作用域、待确认候选及显式记忆测试，包文件清单与摘要也可核验。此前联动验证使用隔离工作进程和合成知识库，不代表真实个人资料或长期模型准确率测试。1.0.8 发布检查结果见 [发布清单](release-manifest.json)。
 
 图像、音频和附件原文提取不在本插件内。自定义压缩引擎、复杂跨项目指代和任意长上下文质量尚无普遍保证。宿主关闭后只保留待办，不会继续后台推理。更新遵循[版本与更新规则](VERSIONING.zh-CN.md)：所有较新版本自动安装，包括跨主版本和预览版，状态仅在页内显示，无更新弹窗。此版本不提供跨设备同步。
 
@@ -72,3 +72,19 @@ python -m unittest discover -s tests -p "test_*.py"
 ```
 
 `plugin/src/` 为 DSH 接入和界面，`memory_core/` 为持久化、来源检查与召回核心。构建脚本将二者组装为插件包，不读取任何运行数据。项目沿用仓库的 [MIT 许可证](LICENSE)。
+
+## 1.0.8 更新与边界
+
+本次发布汇总 1.0.5 之后尚未公开的修复，以及 2026-11-07 的记忆重试和关系网文字调整。
+
+- 记忆提交被拒绝、部分保存或抛出错误后，下一步提供新的批次合同；合同内容不变也不复用已经提交的回答。过期批次调用同样触发刷新。仍禁止改写旧批次的首次回答，保留原文和跨会话校验。
+- 路径字段只接受原文中的路径字面量；报错提示明确说明，应将默认位置和适用条件等完整约定另存为规则。仅工具回执 state=saved 且 can_confirm_saved=true 时确认保存。重启不会保证模型已重新提交或保存成功。
+- 关系网文字固定在节点旁，遮挡时虚化，遮挡解除后恢复。移除标签避让选位及牵引线，避免文字在重绘时跳动。保留节点旋转、缩放和选择交互。
+- 自动记忆所有者跨预设及工具服务域工作。pure 预设、会话 memoryEnabled=false 或 excludedPresets 中的预设不注入、不采集、不绑定记忆工具，并使用原压缩路径；已有记忆仍保留。
+- 增加可选微信会话作用域和聊天表达习惯项目存储接口。聊天风格档案标为模型推断，不作为全局事实；仅搭配支持接口的微信插件使用。此包不包含微信插件，也不训练模型。
+
+兼容要求以 package.json 的 peerDependencies 为准：DSH 及相关官方包 0.2.1-rc.5、Cordis ~4.0.5。旧宿主不保证兼容。
+
+发布检查使用虚构数据和隔离的本地 Python 工作进程，覆盖拒绝后新批次重试、旧回答不可改写、纯净排除、会话隔离及续步召回，并检查 JavaScript 语法、安装包往返和公开内容边界。未使用私人记忆库、真实聊天或付费模型。没有验证安装本发布包后完整重启的真实宿主表现，关系网的实际视觉效果也尚未人工验收。精确构建号、摘要和测试数量见 release-manifest.json。
+
+通过 DSH 插件管理器安装 local-dsh-memory-1.0.8.tgz。保存当前工作后完全退出宿主（包括托盘）并重新打开，在记忆详情中确认版本 1.0.8。失败记忆可在原会话要求重新保存，并核对工具成功回执及记忆列表；不能只以助手口头复述判断入库。

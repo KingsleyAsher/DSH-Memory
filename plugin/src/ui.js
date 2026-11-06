@@ -1,47 +1,42 @@
-// Bare-package host entry keeps the browser half discoverable independently
-// of whether the optional memory agent preset is currently active.
+// One owner follows agents independently of preset names; tools are bound to
+// their actual service realms, which can be shared or isolated by presets.
 import {defineTool} from '@deepseek-ai/dsh-tools';
 import {createUserMessage,BlockAssembler} from '@deepseek-ai/dsh-llm';
 import {BasicCompactionEngine} from '@deepseek-ai/dsh-compaction-basic';
-import {MemoryRuntime} from './runtime.js';
+import {MemoryRuntime,automaticRuntimes,isMemoryExcluded} from './runtime.js';
 export const name = 'dsh-memory-ui';
-export function apply(ctx) {
+export function apply(ctx,config={}) {
   ctx.inject(['memoryStore','agentPresets'],scope=>{
-    const installed=new Map();
-    const compactors=new WeakSet();
-    const attach=async agent=>{
-      const registry=scope.get('agentPresets');
-      const service=name=>registry.serviceFor(agent,name)??scope.get(name);
-      const preset=registry.composedPreset(agent.ctx)??'@default';
-      let runtime=installed.get(preset);
-      const tools=service('tools');if(!tools)return;
-      if(!runtime&&tools.get('memory_submit',agent))return;
-      if(!runtime){
-        // One runtime per preset tool realm. It observes only agents in that
-        // realm, including resumed agents; it does not replace their compactor.
-        const facade={tools,llm:service('llm'),logger:scope.logger,effect:scope.effect.bind(scope),
-          on(name,handler){
-            if(name==='session/event')return ()=>{};
-            return scope.on(name,(payload,...rest)=>{
-              if(payload?.agent&&(registry.composedPreset(payload.agent.ctx)??'@default')!==preset){const next=rest.at(-1);return typeof next==='function'?next():undefined;}
-              return handler(payload,...rest);
-            });
-          }};
-        runtime=new MemoryRuntime(facade,scope.get('memoryStore').bridge,{defineTool,createUserMessage});
-        installed.set(preset,runtime);
+    const bridge=scope.get('memoryStore').bridge,registry=scope.get('agentPresets');
+    const resolveService=(agent,name)=>registry.serviceFor(agent,name)??scope.get(name);
+    const compactorMethods=new WeakSet(),warned=new Set();
+    let runtime;
+    const attach=agent=>{
+      if(isMemoryExcluded(agent.session,config)) return;
+      try { runtime.registerTools(resolveService(agent,'tools')); }
+      catch(error){
+        const warning='memory tools unavailable; recall remains active: '+error.message;
+        if(!warned.has(warning)){warned.add(warning);scope.logger.warn(warning);}
       }
-      await runtime.sync(agent);
-      const engine=service('compaction');
-      if(engine instanceof BasicCompactionEngine&&!compactors.has(engine)){
+      const engine=resolveService(agent,'compaction');
+      if(engine instanceof BasicCompactionEngine&&!compactorMethods.has(engine.summarize)){
         const descriptor=Object.getOwnPropertyDescriptor(engine,'summarize');
-        const summarize=function(input,current,signal){return runtime.summarize(this,input,current,signal,BlockAssembler);};
+        const originalSummarize=engine.summarize;
+        const summarize=function(input,current,signal){return isMemoryExcluded(current?.session,config) ? originalSummarize.call(this,input,current,signal) : runtime.summarize(this,input,current,signal,BlockAssembler);};
         scope.effect(()=>{
           Object.defineProperty(engine,'summarize',{value:summarize,writable:true,configurable:true});
-          compactors.add(engine);
-          return ()=>{if(engine.summarize===summarize){if(descriptor)Object.defineProperty(engine,'summarize',descriptor);else delete engine.summarize;}compactors.delete(engine);};
+          compactorMethods.add(summarize);
+          return ()=>{if(engine.summarize===summarize){if(descriptor)Object.defineProperty(engine,'summarize',descriptor);else delete engine.summarize;}compactorMethods.delete(summarize);};
         },'memory: augment existing compaction request');
-      } else if(engine&&!(engine instanceof BasicCompactionEngine))scope.logger.warn('memory: custom compaction engine requires its own same-call adapter');
+      } else if(engine&&!(engine instanceof BasicCompactionEngine)&&!warned.has(engine.constructor)){
+        warned.add(engine.constructor);
+        scope.logger.warn('memory: custom compaction engine requires its own same-call adapter; normal recall remains active');
+      }
     };
-    scope.on('agent/created',async({agent})=>{try{await attach(agent);}catch(error){scope.logger.warn('automatic memory attachment deferred: '+error.message);}});
+    const facade={logger:scope.logger,effect:scope.effect.bind(scope),on:scope.on.bind(scope),get:scope.get.bind(scope)};
+    runtime=new MemoryRuntime(facade,bridge,{defineTool,createUserMessage},
+      {...config,registerTools:false,ensureAgent:attach,resolveService});
+    automaticRuntimes.set(bridge,runtime);
+    scope.effect(()=>()=>{if(automaticRuntimes.get(bridge)===runtime)automaticRuntimes.delete(bridge);},'memory: release automatic owner');
   });
 }

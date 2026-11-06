@@ -36,6 +36,8 @@ export async function handleMemoryRequest(bridge, request, updates) {
 }
 
 export default class MemoryStore extends Service {
+  conversationScopeVersion = 1;
+  chatStyleVersion = 1;
   constructor(ctx, config = {}) {
     super(ctx, 'memoryStore');
     const packageInfo=JSON.parse(readFileSync(new URL('../package.json',import.meta.url),'utf8'));
@@ -59,7 +61,7 @@ export default class MemoryStore extends Service {
       if(op==='revision')return {revision:this.revision};
       const {knowledge_session,...workerArgs}=args;
       const result=await originalRequest(op,workerArgs);
-      if(['submit','commit','manual_add','manual_remove','review_resolve','scope_activate','ingest','recover'].includes(op))this.changed();
+      if(['submit','commit','manual_add','manual_remove','review_resolve','scope_activate','ingest','recover','style_project_put'].includes(op))this.changed();
       if(op!=='manual_list'&&op!=='query')return result;
       const provider=ctx.get('knowledgeMemory');
       if(!provider||provider.protocol!=='dsh-memory/v1'){this.knowledgeState={state:'standalone',entries:[]};return {...result,knowledge:{state:'standalone'}};}

@@ -114,7 +114,7 @@ class PluginBridge:
         if op=='query':
             project=self.scopes.project_for(args.get('session',''),args['project'])
             result=self.core.query(args['question'],project=project,entity='workspace',answer=False)
-            archive=self.scopes.evidence(project,args['question'])
+            archive=self.scopes.evidence(project,args['question'],legacy_sessions=args.get('legacy_sessions',[]))
             managed={r[0] for r in self.db.execute("SELECT claim_id FROM plugin_memory_entries")}
             candidates=archive+[dict(source_id=f['source_id'],value=f['value_text'],quote=f['quote'],scope='project',origin='automatic') for f in result.get('delivered',[]) if f['id'] not in managed]
             evidence=[]
@@ -123,6 +123,9 @@ class PluginBridge:
                 if self.core.tokens.count(evidence+[candidate])<=self.core.config.memory_tokens:evidence.append(candidate)
             return dict(evidence=evidence,packet_tokens=self.core.tokens.count(evidence),timing=result.get('timing',{}))
         if op=='scope_activate':return self.scopes.activate(**args)
+        if op=='style_project_put':return self.scopes.put_chat_style(**args)
+        if op=='style_project_get':return self.scopes.get_chat_style(**args)
+        if op=='scope_bind_conversation':return self.scopes.bind_conversation(**args)
         if op=='knowledge_merge':
             result=args['result'];evidence=list(result.get('evidence',[]))
             for candidate in args.get('candidates',[]):
