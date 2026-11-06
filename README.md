@@ -87,4 +87,3 @@ Compatibility follows package.json peerDependencies: DSH and related official pa
 Release checks use synthetic data and isolated local Python workers for corrected retries, immutable old answers, pure exclusion, conversation isolation and tool continuation, plus JavaScript syntax, archive round-trip and publication scans. No private memory database, real chat or paid model was used. A full installed-host restart of this release and a visual acceptance check of the graph were not performed. Exact build identity, digest and test counts are in release-manifest.json.
 
 Install local-dsh-memory-1.0.8.tgz through the DSH plugin manager. Save your work, fully exit the Host including its tray process, reopen it and confirm version 1.0.8 in Memory details. Retry failed memories in the original conversation and inspect both successful tool receipts and stored entries; an assistant's verbal acknowledgment is insufficient.
-

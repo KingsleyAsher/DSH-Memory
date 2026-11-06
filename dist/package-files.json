@@ -6,13 +6,13 @@
   },
   {
     "path": "GUIDE.en.md",
-    "sha256": "8f81c2245cb47ed29964434fa13774b9695f1329faf92e30a5f8ff6825f64eae",
-    "bytes": 8178
+    "sha256": "910eed24fff9decd21dd54af95f383cc8a88da56d32d5f2987ef0900bf89118e",
+    "bytes": 8177
   },
   {
     "path": "GUIDE.zh-CN.md",
-    "sha256": "fd33750dc2af9ed7e95310215d0c8527e8f1abd2cb0ff02565914960ee2b4264",
-    "bytes": 8083
+    "sha256": "6c6332435a9952ec32dc7c0e6b5f74a6e9938ba38b17cb1342845c3847c0447d",
+    "bytes": 8082
   },
   {
     "path": "LICENSE",
@@ -21,13 +21,13 @@
   },
   {
     "path": "PROJECT-RECORD.en.md",
-    "sha256": "ab1818f2e32baf73176ff79ac10de7c7b701b44850368716a75014bc4f65e5b1",
-    "bytes": 5692
+    "sha256": "eede7f6ff2a86de35e07036eb703913b6eae7e7b4539e42e3edd91c2ee1d7d34",
+    "bytes": 5691
   },
   {
     "path": "PROJECT-RECORD.zh-CN.md",
-    "sha256": "9f48b689cddcb9e02f9d848ff7fb163d8744ed76acbd38f8b0c3d374cd03faa9",
-    "bytes": 5282
+    "sha256": "11b1a32b288ef21ecc7cd870f226c5db32ad9e8f7d0e910e87821d7d35388261",
+    "bytes": 5281
   },
   {
     "path": "PUBLICATION.md",
@@ -36,13 +36,13 @@
   },
   {
     "path": "README.md",
-    "sha256": "7965c1a9f142a74fce910aae1ed92ab42edd7925a9a495b4db1ad9ef8858aac1",
-    "bytes": 7778
+    "sha256": "7775542916b36fee09890cdaf95cb042929e8378559c446cdc76fd2293b7cd1e",
+    "bytes": 7777
   },
   {
     "path": "README.zh-CN.md",
-    "sha256": "0e6b3b7db767332822ae15ce6ae225e99b44016598ddfa7002fb0b10b061e8e8",
-    "bytes": 7586
+    "sha256": "45d2a6f02321d1dd0dcbcccb1403374ccef47ce20d719fefca4a2ed4e52be0a9",
+    "bytes": 7585
   },
   {
     "path": "RELEASE.en.md",
