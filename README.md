@@ -1,4 +1,4 @@
-# DSH Memory 1.0.8
+# DSH Memory 1.0.9
 
 Long-term memory for DeepSeek Harness. Capture reusable preferences, constraints and project facts with their sources, then recall relevant evidence in later turns. Records support correction, withdrawal, manual management and optional knowledge-base integration.
 
@@ -8,23 +8,23 @@ Long-term memory for DeepSeek Harness. Capture reusable preferences, constraints
 
 - [Project and evolution record](PROJECT-RECORD.en.md): goals, architecture, development stages and next steps.
 - [User guide](GUIDE.en.md): installation, configuration, scopes, integration and troubleshooting.
-- [Release notes](RELEASE.en.md): the 1.0.8 deliverable, compatibility and validation limits.
+- [Release notes](RELEASE.en.md): the 1.0.9 deliverable, compatibility and validation limits.
 - [Changelog](CHANGELOG.md): public release history.
 
 ## Current release
 
-The current public release is **1.0.8**, packaged as `@local/dsh-memory`. It consolidates the local beta implementation while retaining storage and preset identifiers for continuity. The version number does not establish perfect extraction accuracy or compatibility with every DSH release.
+The current public release is **1.0.9**, packaged as `@local/dsh-memory`. It consolidates the local beta implementation while retaining storage and preset identifiers for continuity. The version number does not establish perfect extraction accuracy or compatibility with every DSH release.
 
 ## Download
 
-- [Gitee download](https://gitee.com/KingsleyAsher/DSH-Memory/raw/main/dist/local-dsh-memory-1.0.8.tgz)
-- [GitCode download](https://api.gitcode.com/api/v5/repos/KingsleyAsher/DSH-Memory/raw/dist/local-dsh-memory-1.0.8.tgz?ref=main)
+- [Gitee download](https://gitee.com/KingsleyAsher/DSH-Memory/raw/main/dist/local-dsh-memory-1.0.9.tgz)
+- [GitCode download](https://api.gitcode.com/api/v5/repos/KingsleyAsher/DSH-Memory/raw/dist/local-dsh-memory-1.0.9.tgz?ref=main)
 
 All three sources are checked concurrently. The newest release wins, with regional-source preference and download fallback. Mirrors can lag.
 
-- [Release 1.0.8](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.8)
-- [Plugin package](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.8/local-dsh-memory-1.0.8.tgz)
-- [Repository download](dist/local-dsh-memory-1.0.8.tgz) · [SHA-256 checksums](dist/SHA256SUMS)
+- [Release 1.0.9](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.9)
+- [Plugin package](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.9/local-dsh-memory-1.0.9.tgz)
+- [Repository download](dist/local-dsh-memory-1.0.9.tgz) · [SHA-256 checksums](dist/SHA256SUMS)
 
 ## What the plugin does
 
@@ -46,7 +46,7 @@ python -m pip install numpy
 Add this installation source in the DSH plugin manager, or choose the downloaded local `.tgz`:
 
 ```text
-https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.8.tgz
+https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.9.tgz
 ```
 
 Enable the plugin and open Memory in the sidebar, under More in narrow layouts, or through the conversation view. If the host asks for a restart, quit the tray process as well. Memory attaches to supported presets as agents are created or resumed; a separate DSH Memory preset remains available.
@@ -87,3 +87,13 @@ Compatibility follows package.json peerDependencies: DSH and related official pa
 Release checks use synthetic data and isolated local Python workers for corrected retries, immutable old answers, pure exclusion, conversation isolation and tool continuation, plus JavaScript syntax, archive round-trip and publication scans. No private memory database, real chat or paid model was used. A full installed-host restart of this release and a visual acceptance check of the graph were not performed. Exact build identity, digest and test counts are in release-manifest.json.
 
 Install local-dsh-memory-1.0.8.tgz through the DSH plugin manager. Save your work, fully exit the Host including its tray process, reopen it and confirm version 1.0.8 in Memory details. Retry failed memories in the original conversation and inspect both successful tool receipts and stored entries; an assistant's verbal acknowledgment is insufficient.
+
+## 1.0.9 loading improvement
+
+Fix slow entry into memory management: the local list no longer waits for knowledge-library synchronization. It returns immediately, while complete linked snapshots appear afterward. Loading status is visible and local entries remain usable when the linked service fails.
+
+The management-only loader coalesces concurrent requests per session, retains at most eight session snapshots and expires completed snapshots after thirty seconds. Provider notifications and replacement invalidate cached and in-flight results. The frontend coalesces refreshes and preserves unchanged list identity. Conversation recall still reads fresh snapshots.
+
+Validation: an isolated browser page with synthetic records and a fixed three-second linked-service delay displayed local records in 96 ms versus 3489 ms before the change. This is one measurement of that scenario, not a live-host speed guarantee. Linked records later appeared, project scope switching passed and no page runtime errors occurred. New checks cover coalescing, session isolation, invalidation, expiry, offline/incomplete snapshots and provider removal; existing release regressions and archive/publication checks remain enabled. No private database, chat or machine-specific test materials are published. Performance after installing and fully restarting the live Host remains unverified.
+
+Compatibility is unchanged from 1.0.8; see package.json peerDependencies. Install local-dsh-memory-1.0.9.tgz through the DSH plugin manager, fully exit including the tray process, reopen and confirm version 1.0.9 in Memory details. Build identity, digest and test counts are recorded in release-manifest.json.

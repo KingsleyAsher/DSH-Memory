@@ -193,6 +193,7 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
     function MemoryPage() {
       const [reviews,setReviews]=R.useState([]);
       const [data, setData] = R.useState({ project: null, entries: [] });
+      const [loading,setLoading]=R.useState(true);
       const [view,setView]=R.useState('list');
       const [scope, setScope] = R.useState('global'); const [search, setSearch] = R.useState('');
       const [open, setOpen] = R.useState(false); const [draftScope, setDraftScope] = R.useState('global');
@@ -200,9 +201,15 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
       const [busy, setBusy] = R.useState(false); const [error, setError] = R.useState(''); const [notice, setNotice] = R.useState('');
       const [deleting, setDeleting] = R.useState(null); const [clear, setClear] = R.useState(false);
       const input = R.useRef(null); const addButton = R.useRef(null); const requestId = R.useRef(null);
+      const refreshTask=R.useRef(null);
       const refresh = R.useCallback(async () => {
-        try { await navigation; const result = await api('list'); setData(result); if(!result.project)setScope('global'); const pending=await api('reviews');setReviews(pending.candidates);setError(''); }
-        catch (err) { setError(err.message); }
+        if(refreshTask.current)return refreshTask.current;
+        const task=(async()=>{
+          try { await navigation; const result = await api('list'); setData(previous=>JSON.stringify(previous)===JSON.stringify(result)?previous:result);setLoading(false); if(!result.project)setScope('global'); const pending=await api('reviews');setReviews(pending.candidates);setError(''); }
+          catch (err) { setLoading(false);setError(err.message); }
+        })();
+        refreshTask.current=task;
+        try{await task;}finally{refreshTask.current=null;}
       }, []);
       R.useEffect(() => {
         let stopped=false,running=false,revision;
@@ -263,12 +270,15 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
           e('strong',null,item.title),e('span',{className:'dm-badge'},label(item.scope)),e('p',null,'需要确认：'+item.reason),e('p',null,'用户原话：'+item.quote),
           e('textarea',{name:'text',className:'dm-textarea',defaultValue:item.body,required:true,maxLength:4000,'aria-label':'候选记忆内容'}),
           e('button',{className:'dm-btn',type:'submit'},'接受并保存'),e('button',{className:'dm-btn',type:'button',onClick:async()=>{try{await api('review',{candidate_id:item.id,accept:false});await refresh();}catch(err){setError(err.message);}}},'拒绝'))):e('p',{className:'dm-empty'},'没有需要确认的记忆。明确记忆会自动收录。')),
-        view==='graph' && e(NebulaView,{entries:data.entries,onAdd:()=>{setDraftScope(data.project?'project':'global');setOpen(true);}}),
+        loading && e('p',{className:'dm-status',role:'status'},'正在加载记忆…'),
+        !loading && data.knowledge?.state==='loading' && e('p',{className:'dm-status',role:'status'},'正在加载联动记忆…'),
+        !loading && data.knowledge?.state==='unavailable' && e('p',{className:'dm-error',role:'status'},'联动记忆暂时不可用，已显示本地记忆。'),
+        !loading && view==='graph' && e(NebulaView,{entries:data.entries,onAdd:()=>{setDraftScope(data.project?'project':'global');setOpen(true);}}),
         e('div', { className: 'dm-toolbar',hidden:view!=='list' }, e('div', { className: 'dm-tabs', role: 'group', 'aria-label': '查看记忆范围' }, ['global', 'project'].map(v => tab(v))), e('input', { className: 'dm-search', type: 'search', 'aria-label': '搜索记忆', placeholder: '搜索记忆', value: search, onChange: ev => setSearch(ev.target.value) })),
         e('div', { className: 'dm-scope-note',hidden:view!=='list' }, e('span', null, scope === 'global' ? '全局记忆 · 所有 Agent 预设共享，跨项目可用。' : data.project ? '当前项目：' + data.project + ' · 随项目激活，切换预设或项目不会删除。' : '尚未选择项目。进入项目后可以添加项目记忆。'), scope === 'project' && data.project && e('button', { className: 'dm-link', onClick: () => setClear(true) }, '清理项目记忆')),
         clear && e('div', { className: 'dm-clear' }, e('p', null, '清除当前项目的全部记忆？全局记忆会保留。'), e('button', { className: 'dm-btn dm-btn-danger', disabled: busy, onClick: clearProject }, '确认清理'), ' ', e('button', { className: 'dm-btn', disabled: busy, onClick: () => setClear(false) }, '取消')),
         !open && error && e('p', { className: 'dm-error', role: 'alert' }, error), notice && e('p', { className: 'dm-status', role: 'status' }, notice),
-        e('div', { className: 'dm-list',hidden:view!=='list' }, entries.length ? entries.map(memory => e('article', { className: 'dm-item', key: memory.id },
+        e('div', { className: 'dm-list',hidden:loading||view!=='list' }, entries.length ? entries.map(memory => e('article', { className: 'dm-item', key: memory.id },
           e('div', { className: 'dm-item-head' }, e('div', { className: 'dm-item-title' }, memory.title, e('span', { className: 'dm-badge' }, label(memory.scope))), e('span', { className: 'dm-badge' }, memory.origin === 'manual' ? '手动' : '自动')),
           e('p', { className: 'dm-body' }, memory.text), e('div', { className: 'dm-item-foot' }, e('span', null, memory.origin==='knowledge'?'知识库 · 只读同步':new Date(memory.created * 1000).toLocaleDateString()),memory.origin==='knowledge'?e('span',null,'在知识库中维护'):deleting === memory.id ? e('span', null, '删除这条记忆？ ', e('button', { className: 'dm-link', disabled: busy, onClick: () => remove(memory.id) }, '确认'), ' ', e('button', { className: 'dm-link', onClick: () => setDeleting(null) }, '取消')) : e('button', { className: 'dm-link', onClick: () => setDeleting(memory.id) }, '删除')))) : e('div', { className: 'dm-empty' }, e(Icon, { size: 32 }), e('strong', null, search ? '没有匹配的记忆' : '还没有' + label(scope)), !search && '可以手动添加，也可以在对话中自动收录。')))), modal && createPortal(modal, document.body));
     }

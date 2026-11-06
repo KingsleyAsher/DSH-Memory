@@ -1,18 +1,18 @@
 [
   {
     "path": "CHANGELOG.md",
-    "sha256": "16a37700fe9d1fbb3ecf7f4ba67237f5b782edd512019da8e7af306ab73ce3fa",
-    "bytes": 3909
+    "sha256": "5b52663f2b8d66bdc7c4e79587e46ca5fbf62474ff9831933ddce252ae065426",
+    "bytes": 4498
   },
   {
     "path": "GUIDE.en.md",
-    "sha256": "910eed24fff9decd21dd54af95f383cc8a88da56d32d5f2987ef0900bf89118e",
-    "bytes": 8177
+    "sha256": "45988842d108c1b0db762590287192c782f440287af1bb5b05746c953aa939cf",
+    "bytes": 9862
   },
   {
     "path": "GUIDE.zh-CN.md",
-    "sha256": "6c6332435a9952ec32dc7c0e6b5f74a6e9938ba38b17cb1342845c3847c0447d",
-    "bytes": 8082
+    "sha256": "9d7dbfda917fe814122db37e71369d0b61a281ee79691b1182ef3778d3de02af",
+    "bytes": 9565
   },
   {
     "path": "LICENSE",
@@ -21,13 +21,13 @@
   },
   {
     "path": "PROJECT-RECORD.en.md",
-    "sha256": "eede7f6ff2a86de35e07036eb703913b6eae7e7b4539e42e3edd91c2ee1d7d34",
-    "bytes": 5691
+    "sha256": "05c1c77961e4d36ec77bee12e4260a8fa9dc6ffc8c26becd765cdd2bbfaa18a9",
+    "bytes": 7376
   },
   {
     "path": "PROJECT-RECORD.zh-CN.md",
-    "sha256": "11b1a32b288ef21ecc7cd870f226c5db32ad9e8f7d0e910e87821d7d35388261",
-    "bytes": 5281
+    "sha256": "fdd899a8ee03fb4f9627e90de13bdc6cce9748ed23be055e7b772aee35579fdc",
+    "bytes": 6764
   },
   {
     "path": "PUBLICATION.md",
@@ -36,32 +36,32 @@
   },
   {
     "path": "README.md",
-    "sha256": "7775542916b36fee09890cdaf95cb042929e8378559c446cdc76fd2293b7cd1e",
-    "bytes": 7777
+    "sha256": "733b6f408dd84e1d54725b81d6d1c3e30a3126940cab347b36436cc422078df3",
+    "bytes": 9462
   },
   {
     "path": "README.zh-CN.md",
-    "sha256": "45d2a6f02321d1dd0dcbcccb1403374ccef47ce20d719fefca4a2ed4e52be0a9",
-    "bytes": 7585
+    "sha256": "71c73516cfa04867c34fbfc33051ac72f9bf477bffccce97a55d4487c228cd76",
+    "bytes": 9068
   },
   {
     "path": "RELEASE.en.md",
-    "sha256": "f761a80c8cc61c2d86aff36c0c3a1014d7ebbbf052a66e755c8c4bf09c3cc008",
-    "bytes": 2368
+    "sha256": "9ff0ce7f149162e2deb4877203ca3bbce39459032f3abd5ed891a001302bf1af",
+    "bytes": 1674
   },
   {
     "path": "RELEASE.zh-CN.md",
-    "sha256": "b1a0a4f90b0e988272a333534fde625afcca789545a19d39efd272e0e668213e",
-    "bytes": 2292
+    "sha256": "ff323fd41979fdfc87352dac4e73b1711a2f530b63deab0edc2f674142769389",
+    "bytes": 1479
   },
   {
     "path": "VERSIONING.en.md",
-    "sha256": "03cfa97804c05cde2e0a74a81365fa23b00ca78e53e5b0da32e14928f7176fac",
+    "sha256": "5370893e26b4e1858f4651d4e4bdd1e6ac8e9396c3fb93d034e98a5d52799c1a",
     "bytes": 2136
   },
   {
     "path": "VERSIONING.zh-CN.md",
-    "sha256": "008ae754920cf3fbbb0f5b01d0abc20815db45ff27a615bcc06bc05d056eb382",
+    "sha256": "ee4e11be15546e75d7bb07945bd5fc4e664308876cb286d6136b935fd636694f",
     "bytes": 2202
   },
   {
@@ -71,12 +71,12 @@
   },
   {
     "path": "package.json",
-    "sha256": "31e71eae185b831f4a796afb3c01425e99a5d5b0a3bd3cc0fdde65108e5169ca",
+    "sha256": "fd0a4570cddf7faaf77e93c22ca493b9314a84c16065dea8b0ca2fd1c68aef9d",
     "bytes": 1272
   },
   {
     "path": "python/memory_core/__init__.py",
-    "sha256": "c9ddd383e719574d44ff6ea92c159f8e05dd783a8476e453f395569d4645481f",
+    "sha256": "bcfe52a4d485f76f749f3df5b5577419208cabe43f321081ca13d84e353d0cf1",
     "bytes": 98
   },
   {
@@ -341,8 +341,8 @@
   },
   {
     "path": "src/client.js",
-    "sha256": "a311c8339e232f76f714eed4c78e77a14b0d844c92a621a30cba2b3a9e7f0e98",
-    "bytes": 183533
+    "sha256": "b8171f61bef62a2af0a530308b69840750d07f52f750118ff08c253200395ebc",
+    "bytes": 184336
   },
   {
     "path": "src/details.js",
@@ -356,8 +356,8 @@
   },
   {
     "path": "src/knowledge-memory.js",
-    "sha256": "1d6d33d338502996b343066287c1efccf9292d11c2fadc15cb6b54fceeb750e3",
-    "bytes": 3445
+    "sha256": "33e8b2aa0e68c66499d305932ecc7e70675a5f92111d0cdc5a6b22acaaf39319",
+    "bytes": 5390
   },
   {
     "path": "src/runtime.js",
@@ -366,8 +366,8 @@
   },
   {
     "path": "src/store.js",
-    "sha256": "44b115ff2e3fbb22c192bea3aab4d8f247abf87f5809086d5efc86394df606ff",
-    "bytes": 7006
+    "sha256": "965f0a5f0a1d6d0ca81bd1001411e866e842bff11153f35c575a327a48a35ac9",
+    "bytes": 7420
   },
   {
     "path": "src/ui.js",

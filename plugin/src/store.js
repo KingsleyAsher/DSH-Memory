@@ -8,6 +8,7 @@ import { fileURLToPath } from 'node:url';
 import { homedir } from 'node:os';
 import { CoreBridge } from './bridge.js';
 import { randomUUID } from 'node:crypto';
+import { createMemoryListLoader } from './knowledge-memory.js';
 
 const OPS = {
   activate: 'scope_activate', current: 'scope_current', list: 'manual_list',
@@ -56,6 +57,7 @@ export default class MemoryStore extends Service {
     this.knowledgeState={state:'standalone',entries:[]};
     this.revision=randomUUID();
     this.changed=()=>{this.revision=randomUUID();ctx.emit('memory/changed',{revision:this.revision});};
+    const listLoader=createMemoryListLoader({getProvider:()=>ctx.get('knowledgeMemory'),changed:()=>this.changed()});
     const originalRequest=this.bridge.request.bind(this.bridge);
     this.bridge.request=async(op,args={})=>{
       if(op==='revision')return {revision:this.revision};
@@ -63,6 +65,7 @@ export default class MemoryStore extends Service {
       const result=await originalRequest(op,workerArgs);
       if(['submit','commit','manual_add','manual_remove','review_resolve','scope_activate','ingest','recover','style_project_put'].includes(op))this.changed();
       if(op!=='manual_list'&&op!=='query')return result;
+      if(op==='manual_list')return listLoader.load(result,knowledge_session);
       const provider=ctx.get('knowledgeMemory');
       if(!provider||provider.protocol!=='dsh-memory/v1'){this.knowledgeState={state:'standalone',entries:[]};return {...result,knowledge:{state:'standalone'}};}
       try{
@@ -96,8 +99,10 @@ export default class MemoryStore extends Service {
       throw Error('unknown_global_memory_operation');
     };
     ctx.inject(['knowledgeMemory'],scope=>{
-      const off=scope.get('knowledgeMemory')?.subscribe?.(()=>this.changed());
+      listLoader.invalidate();
+      const off=scope.get('knowledgeMemory')?.subscribe?.(()=>{listLoader.invalidate();this.changed();});
       if(off)scope.effect(()=>off,'memory: knowledge changes');
+      scope.effect(()=>()=>listLoader.invalidate(),'memory: discard knowledge list snapshots');
       this.changed();
     });
     ctx.effect(() => () => this.bridge.close(), 'memory: stop shared private worker');

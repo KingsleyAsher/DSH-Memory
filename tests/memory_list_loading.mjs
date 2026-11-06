@@ -1,0 +1,34 @@
+import assert from 'node:assert/strict';
+import {createMemoryListLoader} from '../plugin/src/knowledge-memory.js';
+
+let calls=0,updates=0,time=0;
+const pending=[];
+const provider={protocol:'dsh-memory/v1',snapshot:({session})=>{
+  calls++;return new Promise((resolve,reject)=>pending.push({session,resolve,reject}));
+}};
+const loader=createMemoryListLoader({getProvider:()=>provider,changed:()=>updates++,now:()=>time});
+const local={project:'synthetic-project',entries:[{id:'synthetic-local'}]};
+const flush=()=>new Promise(setImmediate);
+assert.equal(loader.load(local,'a').knowledge.state,'loading');
+loader.load(local,'a');await flush();assert.equal(calls,1);
+assert.equal(loader.load(local,'a').entries[0].id,'synthetic-local');
+pending[0].resolve({protocol:'dsh-memory/v1',complete:true,entries:[{id:'synthetic-linked-a'}]});
+await flush();assert.equal(loader.load(local,'a').entries.length,2);assert.equal(updates,1);
+assert.equal(loader.load(local,'b').entries.length,1);await flush();assert.equal(pending[1].session,'b');
+loader.invalidate();
+pending[1].resolve({protocol:'dsh-memory/v1',complete:true,entries:[{id:'synthetic-invalidated'}]});
+await flush();assert.equal(updates,1,'invalidated work must not restore withdrawn data');
+assert.equal(loader.load(local,'a').knowledge.state,'loading');await flush();
+pending[2].reject(Error('synthetic offline'));await flush();
+assert.equal(loader.load(local,'a').knowledge.state,'unavailable');
+assert.equal(loader.load(local,'a').entries.length,1);
+time=30001;assert.equal(loader.load(local,'a').knowledge.state,'loading');await flush();
+pending[3].resolve({protocol:'dsh-memory/v1',complete:false,entries:[]});await flush();
+assert.equal(loader.load(local,'a').knowledge.state,'unavailable','partial snapshots must not be published');
+let current=provider;
+const disconnect=createMemoryListLoader({getProvider:()=>current,changed:()=>updates++});
+disconnect.load(local,'a');await flush();current=null;
+assert.equal(disconnect.load(local,'a').knowledge.state,'standalone');
+const before=updates;pending[4].resolve({protocol:'dsh-memory/v1',complete:true,entries:[{id:'synthetic-disconnected'}]});
+await flush();assert.equal(updates,before);
+console.log('PASS: immediate local records, coalescing, session isolation, invalidation, expiry, incomplete/offline snapshots and provider removal');

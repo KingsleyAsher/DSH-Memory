@@ -1,5 +1,13 @@
 # Changelog / 版本记录
 
+## 1.0.9 — 2026-11-07
+
+- 本地记忆先显示，联动记录后台加载；合并重复刷新和并发联动请求。
+- 管理页缓存按会话隔离、限量并到期失效，变更通知阻止旧快照重新出现；对话召回保持实时。
+- Show local memories before linked snapshots; coalesce requests and preserve unchanged list identity.
+- Bound and invalidate management-page caches without changing conversation recall.
+- Synthetic browser measurement: 3489 ms to 96 ms for local visibility with a fixed 3000 ms linked-service delay; live-host timing remains unverified.
+
 ## 1.0.8 — 2026-11-07
 
 - 修复失败提交复用已锁定批次的问题；新批次重试并保留首次回答不可改写保护，补充路径字面量提示。
