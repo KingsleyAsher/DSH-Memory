@@ -1,5 +1,10 @@
 # Changelog / 版本记录
 
+## 1.0.13 — 2026-11-07
+
+- 知识库服务重连后自动重读联动记忆。重开页面时保留上次的结果并后台刷新。
+- Reload linked memories when the knowledge service reconnects and show the last snapshot while refreshing on reopen.
+
 ## 1.0.12 — 2026-11-07
 
 - 历史会话的记忆管理页使用已保存的知识库归属，联动错误显示具体原因。

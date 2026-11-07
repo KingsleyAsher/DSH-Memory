@@ -220,7 +220,17 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
       }, []);
       R.useEffect(() => {
         let stopped=false,running=false,revision;
-        const check=async()=>{if(stopped||running||document.hidden)return;running=true;try{const next=await api('revision');if(!stopped&&next.revision!==revision){revision=next.revision;await refresh()}}catch(err){if(!stopped)setError(err.message)}finally{running=false}};
+        const check=async()=>{
+          if(stopped||running||document.hidden||refreshTask.current)return;
+          running=true;
+          try{
+            const next=await api('revision');
+            if(!stopped&&!refreshTask.current&&next.revision!==revision){
+              revision=next.revision;
+              await refresh();
+            }
+          }catch(err){if(!stopped)setError(err.message)}finally{running=false}
+        };
         void check();window.addEventListener('dsh-memory:changed',refresh);window.addEventListener('focus',check);
         const timer=setInterval(check,1000),fallback=setInterval(refresh,30000);
         return()=>{stopped=true;clearInterval(timer);clearInterval(fallback);window.removeEventListener('dsh-memory:changed',refresh);window.removeEventListener('focus',check)};
@@ -279,6 +289,7 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
           e('button',{className:'dm-btn',type:'submit'},'接受并保存'),e('button',{className:'dm-btn',type:'button',onClick:async()=>{try{await api('review',{candidate_id:item.id,accept:false});await refresh();}catch(err){setError(err.message);}}},'拒绝'))):e('p',{className:'dm-empty'},'没有需要确认的记忆。明确记忆会自动收录。')),
         loading && e('p',{className:'dm-status',role:'status'},'正在加载记忆…'),
         !loading && data.knowledge?.state==='loading' && e('p',{className:'dm-status',role:'status'},'正在加载联动记忆…'),
+        !loading && data.knowledge?.state==='reconnecting' && e('p',{className:'dm-status',role:'status'},'知识库服务正在重连，就绪后会自动加载联动记忆。'),
         !loading && data.knowledge?.state==='unavailable' && e('p',{className:'dm-error',role:'status'},knowledgeErrors.get(data.knowledge.error) ?? '联动记忆暂时不可用，已显示本地记忆。'),
         !loading && view==='graph' && e(NebulaView,{entries:data.entries,onAdd:()=>{setDraftScope(data.project?'project':'global');setOpen(true);}}),
         e('div', { className: 'dm-toolbar',hidden:view!=='list' }, e('div', { className: 'dm-tabs', role: 'group', 'aria-label': '查看记忆范围' }, ['global', 'project'].map(v => tab(v))), e('input', { className: 'dm-search', type: 'search', 'aria-label': '搜索记忆', placeholder: '搜索记忆', value: search, onChange: ev => setSearch(ev.target.value) })),
