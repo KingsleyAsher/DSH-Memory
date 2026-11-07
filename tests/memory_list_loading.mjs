@@ -4,7 +4,7 @@ import {createMemoryListLoader} from '../plugin/src/knowledge-memory.js';
 
 let calls=0,updates=0,time=0;
 const pending=[];
-const provider={protocol:'dsh-memory/v1',snapshot:({session,purpose})=>{
+const provider={protocol:'dsh-memory/v1',cacheInvalidations:true,snapshot:({session,purpose})=>{
   assert.equal(purpose,'memory-management');
   calls++;return new Promise((resolve,reject)=>pending.push({session,resolve,reject}));
 }};
@@ -70,21 +70,41 @@ console.log('PASS: transient service failure waits with local entries, then relo
 
 let cacheTime=0;
 const cachedReads=[];
-const cachedProvider={protocol:'dsh-memory/v1',snapshot:()=>new Promise(resolve=>cachedReads.push(resolve))};
-const cached=createMemoryListLoader({getProvider:()=>cachedProvider,changed(){},now:()=>cacheTime});
+const cachedProvider={protocol:'dsh-memory/v1',cacheInvalidations:true,snapshot:()=>new Promise(resolve=>cachedReads.push(resolve))};
+let cachedRevisions=0;
+const cached=createMemoryListLoader({getProvider:()=>cachedProvider,changed(){cachedRevisions++;},now:()=>cacheTime});
 const snapshot=id=>({protocol:'dsh-memory/v1',complete:true,entries:[{id}]});
-cached.load(local,'same-session');await flush();
-cachedReads[0](snapshot('previous'));await flush();
-cacheTime=30001;
-assert.deepEqual(cached.load(local,'same-session').entries.map(e=>e.id),['synthetic-local','previous']);
-assert.equal(cached.load(local,'same-session').knowledge.state,'connected');
-await flush();assert.equal(cachedReads.length,2,'reopening starts one background read');
-cachedReads[1](snapshot('fresh'));await flush();
-assert.deepEqual(cached.load(local,'same-session').entries.map(e=>e.id),['synthetic-local','fresh']);
-cacheTime=60002;cached.load(local,'same-session');await flush();
-cached.invalidate();cachedReads[2](snapshot('withdrawn'));await flush();
+mock.timers.enable({apis:['setTimeout']});
+try{
+  cached.load(local,'same-session');await flush();
+  cachedReads[0](snapshot('previous'));await flush();
+  cacheTime=90000;mock.timers.tick(cacheTime);
+  assert.equal(cachedRevisions,1,'idle time must not schedule a reload');
+  assert.deepEqual(cached.load(local,'same-session').entries.map(e=>e.id),['synthetic-local','previous']);
+  assert.equal(cached.load(local,'same-session').knowledge.state,'connected');
+  await flush();assert.equal(cachedReads.length,1,'reopening reuses the snapshot without a read');
+}finally{mock.timers.reset();}
+cached.invalidate();
+assert.equal(cached.load(local,'same-session').knowledge.state,'loading');
+await flush();
+cached.invalidate();cachedReads[1](snapshot('withdrawn'));await flush();
 assert.deepEqual(cached.load(local,'same-session').entries,local.entries);
 assert.equal(cached.load(local,'same-session').knowledge.state,'loading');
-await flush();cachedReads[3](snapshot('authorized'));await flush();
+await flush();cachedReads[2](snapshot('authorized'));await flush();
 assert.deepEqual(cached.load(local,'same-session').entries.map(e=>e.id),['synthetic-local','authorized']);
-console.log('PASS: reopening after expiry shows the previous snapshot while refreshing, and invalidation removes it immediately');
+console.log('PASS: reopening reuses the authorized snapshot, and invalidation removes it immediately');
+
+mock.timers.enable({apis:['setTimeout']});
+try{
+  let reads=0,revisions=0;
+  const legacyProvider={protocol:'dsh-memory/v1',async snapshot(){return snapshot('legacy-'+(++reads));}};
+  const legacy=createMemoryListLoader({getProvider:()=>legacyProvider,changed:()=>revisions++});
+  legacy.load(local,'legacy-session');await flush();
+  mock.timers.tick(29999);assert.equal(revisions,1);
+  mock.timers.tick(1);assert.equal(revisions,2);
+  assert.equal(legacy.load(local,'legacy-session').entries.at(-1).id,'legacy-1');
+  await flush();
+  assert.equal(legacy.load(local,'legacy-session').entries.at(-1).id,'legacy-2');
+  legacy.invalidate();
+}finally{mock.timers.reset();}
+console.log('PASS: older providers retain the bounded refresh');

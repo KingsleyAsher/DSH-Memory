@@ -30,16 +30,26 @@ export function createMemoryListLoader({getProvider,changed,now=Date.now,maxAgeM
       }
       item={state:'loading'};snapshots.set(key,item);
     }
-    // Expiry refreshes a previously verified snapshot in the background.
-    // Provider events still discard it immediately via invalidate().
-    if(!item.refreshing&&(item.state==='loading'||(item.state==='connected'&&now()-item.completedAt>=maxAgeMs))){
+    // Older providers may miss binding changes. Retain the bounded refresh for
+    // them until their subscription covers both content and access changes.
+    if(!item.refreshing&&(item.state==='loading'||item.refreshDue)){
       item.refreshing=true;
+      item.refreshDue=false;
       const epoch=generation;
       Promise.resolve().then(()=>provider.snapshot({session,purpose:'memory-management'})).then(snapshot=>{
         if(snapshot.protocol!=='dsh-memory/v1'||snapshot.complete!==true||!Array.isArray(snapshot.entries))throw Error('incomplete_memory_snapshot');
         if(epoch!==generation||snapshots.get(key)!==item)return;
         item.refreshing=false;
-        item.state='connected';item.entries=snapshot.entries;item.completedAt=now();changed();
+        item.state='connected';item.entries=snapshot.entries;
+        if(provider.cacheInvalidations!==true){
+          item.retryTimer=setTimeout(()=>{
+            if(epoch!==generation||snapshots.get(key)!==item)return;
+            item.refreshDue=true;
+            changed();
+          },maxAgeMs);
+          item.retryTimer.unref?.();
+        }
+        changed();
       }).catch(error=>{
         if(epoch!==generation||snapshots.get(key)!==item)return;
         item.refreshing=false;

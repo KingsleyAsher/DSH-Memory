@@ -16,6 +16,38 @@ const OPS = {
   reviews: 'review_list', review: 'review_resolve',
   revision: 'revision',
 };
+const legacyWriteOps=new Set(['submit','commit','manual_add','manual_remove','review_suggest',
+  'review_resolve','scope_activate','ingest','recover','status','style_project_put']);
+
+function openMemoryChanges(request, subscribers, readRevision) {
+  const {signal}=request;
+  const encoder=new TextEncoder();
+  let subscriber, remove;
+  const body=new ReadableStream({
+    start(controller) {
+      let sent;
+      subscriber={
+        send(){
+          const value=readRevision();
+          if(sent===value.revision||controller.desiredSize<=0)return;
+          controller.enqueue(encoder.encode('data: '+JSON.stringify(value)+'\n\n'));
+          sent=value.revision;
+        },
+        close(){remove();controller.close();},
+      };
+      remove=()=>{
+        subscribers.delete(subscriber);
+        signal.removeEventListener('abort',subscriber.close);
+      };
+      if(signal.aborted){controller.close();return;}
+      subscribers.add(subscriber);
+      signal.addEventListener('abort',subscriber.close,{once:true});
+    },
+    pull(){subscriber.send();},
+    cancel(){remove();},
+  });
+  return new Response(body,{headers:{'content-type':'text/event-stream','cache-control':'no-store','x-accel-buffering':'no'}});
+}
 export async function handleMemoryRequest(bridge, request, updates) {
   try {
     const text = await request.text();
@@ -53,19 +85,52 @@ export default class MemoryStore extends Service {
     if (!isAbsolute(stateDir)) throw new Error('stateDir must be absolute');
     const bundled = fileURLToPath(new URL('../python/', import.meta.url));
     const coreRoot = config.coreRoot ?? (existsSync(resolve(bundled, 'memory_core')) ? bundled : fileURLToPath(new URL('../../', import.meta.url)));
-    this.bridge = new CoreBridge({ home: stateDir, coreRoot, python: config.python ?? 'python' });
+    this.bridge = new CoreBridge({ home: stateDir, coreRoot, python: config.python ?? 'python',
+      onMemoryChange:()=>this.changed() });
     this.knowledgeState={state:'standalone',entries:[]};
     this.revision=randomUUID();
-    this.changed=()=>{this.revision=randomUUID();ctx.emit('memory/changed',{revision:this.revision});};
+    const subscribers=new Set();
+    const readRevision=()=>({revision:this.revision,listDelta:true});
+    this.changed=()=>{
+      this.revision=randomUUID();
+      for(const subscriber of subscribers){
+        try{subscriber.send();}catch(error){ctx.logger.warn('memory change subscriber failed: '+error.message);}
+      }
+      ctx.emit('memory/changed',{revision:this.revision});
+    };
     const listLoader=createMemoryListLoader({getProvider:()=>ctx.get('knowledgeMemory'),changed:()=>this.changed()});
+    const listViews=new Map();
     const originalRequest=this.bridge.request.bind(this.bridge);
     this.bridge.request=async(op,args={})=>{
-      if(op==='revision')return {revision:this.revision};
-      const {knowledge_session,...workerArgs}=args;
+      if(op==='revision')return readRevision();
+      const {knowledge_session,list_delta,list_cursor,...workerArgs}=args;
+      const revision=this.revision;
+      const viewKey=JSON.stringify([workerArgs.window_id,knowledge_session??null]);
+      const previous=op==='manual_list'&&list_delta===true?listViews.get(viewKey):undefined;
+      const canApplyDelta=previous&&previous.cursor===list_cursor;
+      if(canApplyDelta&&previous.revision===revision&&previous.view.knowledge?.state!=='unavailable'){
+        return {cursor:previous.cursor,unchanged:true};
+      }
       const result=await originalRequest(op,workerArgs);
-      if(['submit','commit','manual_add','manual_remove','review_resolve','scope_activate','ingest','recover','style_project_put'].includes(op))this.changed();
+      if(!this.bridge.reportsMemoryChanges&&legacyWriteOps.has(op))this.changed();
+      if(op==='manual_add'&&list_delta===true)return {state:result.state};
       if(op!=='manual_list'&&op!=='query')return result;
-      if(op==='manual_list')return listLoader.load(result,knowledge_session);
+      if(op==='manual_list'){
+        const view=listLoader.load(result,knowledge_session);
+        if(list_delta!==true)return view;
+        const cursor=randomUUID();
+        listViews.delete(viewKey);
+        if(listViews.size>=8)listViews.delete(listViews.keys().next().value);
+        listViews.set(viewKey,{cursor,revision,view});
+        if(!canApplyDelta)return {...view,cursor};
+        const old=new Map(previous.view.entries.map(entry=>[entry.id,entry]));
+        const ids=new Set(view.entries.map(entry=>entry.id));
+        const removed=[...old.keys()].filter(id=>!ids.has(id));
+        const upsert=view.entries.filter(entry=>JSON.stringify(old.get(entry.id))!==JSON.stringify(entry));
+        const order=view.entries.map(entry=>entry.id);
+        const sameOrder=order.length===old.size&&[...old.keys()].every((id,index)=>id===order[index]);
+        return {project:view.project,knowledge:view.knowledge,cursor,delta:{upsert,removed,...(sameOrder?{}:{order})}};
+      }
       const provider=ctx.get('knowledgeMemory');
       if(!provider||provider.protocol!=='dsh-memory/v1'){this.knowledgeState={state:'standalone',entries:[]};return {...result,knowledge:{state:'standalone'}};}
       try{
@@ -98,11 +163,38 @@ export default class MemoryStore extends Service {
       }
       throw Error('unknown_global_memory_operation');
     };
+    this.memoryApi={
+      version:1,
+      request:async(operation,args={},requestId)=>{
+        switch(operation){
+          case 'global.list':return this.globalRequest('list',args,requestId);
+          case 'global.add':return this.globalRequest('add',args,requestId);
+          case 'global.remove':return this.globalRequest('remove',args,requestId);
+          case 'conversation.style.get':return this.bridge.request('style_project_get',{project:args.project});
+          case 'conversation.style.put':return this.bridge.request('style_project_put',{project:args.project,profile:args.profile});
+          default:throw Error('unknown_memory_integration_operation');
+        }
+      },
+      subscribe:listener=>{
+        const subscriber={send:()=>listener(readRevision())};
+        subscriber.send();
+        subscribers.add(subscriber);
+        return ()=>subscribers.delete(subscriber);
+      },
+    };
+    ctx.effect(()=>()=>{
+      for(const subscriber of subscribers)subscriber.close?.();
+      subscribers.clear();
+    },'memory: release integration subscriptions');
     ctx.inject(['knowledgeMemory'],scope=>{
       listLoader.invalidate();
-      const off=scope.get('knowledgeMemory')?.subscribe?.(()=>{listLoader.invalidate();this.changed();});
+      const off=scope.get('knowledgeMemory')?.subscribe?.(event=>{
+        if(event?.event==='dsh.event')return;
+        listLoader.invalidate();
+        this.changed();
+      });
       if(off)scope.effect(()=>off,'memory: knowledge changes');
-      scope.effect(()=>()=>listLoader.invalidate(),'memory: discard knowledge list snapshots');
+      scope.effect(()=>()=>{listLoader.invalidate();this.changed();},'memory: discard knowledge list snapshots');
       this.changed();
     });
     ctx.effect(() => () => this.bridge.close(), 'memory: stop shared private worker');
@@ -110,8 +202,11 @@ export default class MemoryStore extends Service {
     // Connection owns browser authentication, Origin validation and owner-only
     // admission. Do not register an unauthenticated webServer route.
     ctx.inject(['connection'], scope => {
-      scope.connection.fetch.register({ path: '/api/dsh-memory', methods: ['POST'], requestBody: 'buffered',
-        fetch: request => handleMemoryRequest(this.bridge, request, updates) });
+      scope.connection.fetch.register({ path: '/api/dsh-memory', methods: ['GET','POST'], requestBody: 'buffered',
+        fetch: request => request.method==='GET'
+          ? openMemoryChanges(request,subscribers,readRevision)
+          : handleMemoryRequest(this.bridge,request,updates) });
+      scope.effect(()=>()=>{for(const subscriber of subscribers)subscriber.close?.();},'memory: close change subscriptions');
     });
   }
 }

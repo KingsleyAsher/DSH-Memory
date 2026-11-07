@@ -1,4 +1,4 @@
-# DSH Memory 1.0.13
+# DSH Memory 1.0.14
 
 Long-term memory for DeepSeek Harness. Capture reusable preferences, constraints and project facts with their sources, then recall relevant evidence in later turns. Records support correction, withdrawal, manual management and optional knowledge-base integration.
 
@@ -8,23 +8,23 @@ Long-term memory for DeepSeek Harness. Capture reusable preferences, constraints
 
 - [Project and evolution record](PROJECT-RECORD.en.md): goals, architecture, development stages and next steps.
 - [User guide](GUIDE.en.md): installation, configuration, scopes, integration and troubleshooting.
-- [Release notes](RELEASE.en.md): the 1.0.13 deliverable, compatibility and validation limits.
+- [Release notes](RELEASE.en.md): the 1.0.14 deliverable, compatibility and validation limits.
 - [Changelog](CHANGELOG.md): public release history.
 
 ## Current release
 
-The current public release is **1.0.13**, packaged as `@local/dsh-memory`. It consolidates the local beta implementation while retaining storage and preset identifiers for continuity. The version number does not establish perfect extraction accuracy or compatibility with every DSH release.
+The current public release is **1.0.14**, packaged as `@local/dsh-memory`. It consolidates the local beta implementation while retaining storage and preset identifiers for continuity. The version number does not establish perfect extraction accuracy or compatibility with every DSH release.
 
 ## Download
 
-- [Gitee download](https://gitee.com/KingsleyAsher/DSH-Memory/raw/main/dist/local-dsh-memory-1.0.13.tgz)
-- [GitCode download](https://api.gitcode.com/api/v5/repos/KingsleyAsher/DSH-Memory/raw/dist/local-dsh-memory-1.0.13.tgz?ref=main)
+- [Gitee download](https://gitee.com/KingsleyAsher/DSH-Memory/raw/main/dist/local-dsh-memory-1.0.14.tgz)
+- [GitCode download](https://api.gitcode.com/api/v5/repos/KingsleyAsher/DSH-Memory/raw/dist/local-dsh-memory-1.0.14.tgz?ref=main)
 
 All three sources are checked concurrently. The newest release wins, with regional-source preference and download fallback. Mirrors can lag.
 
-- [Release 1.0.13](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.13)
-- [Plugin package](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.13/local-dsh-memory-1.0.13.tgz)
-- [Repository download](dist/local-dsh-memory-1.0.13.tgz) · [SHA-256 checksums](dist/SHA256SUMS)
+- [Release 1.0.14](https://github.com/KingsleyAsher/DSH-Memory/releases/tag/v1.0.14)
+- [Plugin package](https://github.com/KingsleyAsher/DSH-Memory/releases/download/v1.0.14/local-dsh-memory-1.0.14.tgz)
+- [Repository download](dist/local-dsh-memory-1.0.14.tgz) · [SHA-256 checksums](dist/SHA256SUMS)
 
 ## What the plugin does
 
@@ -46,10 +46,10 @@ python -m pip install numpy
 Add this installation source in the DSH plugin manager, or choose the downloaded local `.tgz`:
 
 ```text
-https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.13.tgz
+https://raw.githubusercontent.com/KingsleyAsher/DSH-Memory/main/dist/local-dsh-memory-1.0.14.tgz
 ```
 
-Enable the plugin and open Memory in the sidebar, under More in narrow layouts, or through the conversation view. If the host asks for a restart, quit the tray process as well. Memory attaches to supported presets as agents are created or resumed; a separate DSH Memory preset remains available.
+Enable the plugin and open Memory in the sidebar, under More in narrow layouts, or through the conversation view. If the host asks for a restart, quit the tray process as well. Memory attaches to supported presets as agents are created or resumed. The Memory page reuses its cache and applies changes after a notification. Knowledge Base 2.5.10 can share the global records through the versioned integration interface.
 
 ## Data and privacy
 

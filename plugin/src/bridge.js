@@ -4,8 +4,10 @@ import { mkdirSync } from 'node:fs';
 
 /** One private serial Python worker. Never opens a port or launches a shell. */
 export class CoreBridge {
-  constructor({ python = 'python', home, coreRoot, timeoutMs = 30000 }) {
+  constructor({ python = 'python', home, coreRoot, timeoutMs = 30000, onMemoryChange }) {
     this.options = { python, home, coreRoot, timeoutMs };
+    this.onMemoryChange = onMemoryChange;
+    this.reportsMemoryChanges = false;
     this.pending = new Map(); this.nextId = 1; this.child = null; this.closed = false;
   }
   start() {
@@ -20,6 +22,8 @@ export class CoreBridge {
       env: { ...process.env, PYTHONUTF8: '1', PYTHONPATH: coreRoot },
     });
     this.child = child;
+    this.reportsMemoryChanges = false;
+    let lastRevision;
     const fail = error => {
       if (this.child === child) this.child = null;
       for (const [id, item] of this.pending) {
@@ -37,6 +41,13 @@ export class CoreBridge {
       const item = this.pending.get(value.id);
       if (!item || item.child !== child) return;
       clearTimeout(item.timer); this.pending.delete(value.id);
+      if (Number.isSafeInteger(value.memory_revision)) {
+        this.reportsMemoryChanges = true;
+        if (lastRevision !== value.memory_revision) {
+          lastRevision = value.memory_revision;
+          this.onMemoryChange?.();
+        }
+      }
       value.error ? item.reject(new Error(value.error.message)) : item.resolve(value.result);
     });
   }
