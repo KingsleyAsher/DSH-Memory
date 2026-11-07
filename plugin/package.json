@@ -1,6 +1,6 @@
 {
   "name": "@local/dsh-memory",
-  "version": "1.0.12",
+  "version": "1.0.13",
   "description": "Long-term memory for DeepSeek Harness: evidence-backed capture, scoped recall, review and optional knowledge-base sharing.",
   "type": "module",
   "main": "./src/ui.js",

@@ -1,11 +1,11 @@
 {
-  "version": "1.0.12",
+  "version": "1.0.13",
   "package": "@local/dsh-memory",
-  "archive": "dist/local-dsh-memory-1.0.12.tgz",
-  "tgz": "local-dsh-memory-1.0.12.tgz",
-  "buildId": "44fc0721108d3391",
-  "sha256": "5407605d57e9d88e8150a3a573ba1cd25b7abdcbdf49357629a1b85f4ab0ce29",
-  "bytes": 300426,
+  "archive": "dist/local-dsh-memory-1.0.13.tgz",
+  "tgz": "local-dsh-memory-1.0.13.tgz",
+  "buildId": "3ce93962f76e43b7",
+  "sha256": "d651e59293d05ad4ed10a8bfaa9c0740adf4d49f55e24b4fe4e58aaa6d50f873",
+  "bytes": 301152,
   "files": 77,
   "verification": {
     "syntheticTestsPassed": 16,

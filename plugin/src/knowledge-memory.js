@@ -4,27 +4,62 @@ const marks=new Set(['记忆','长期记忆','memory','memories']);
 // The management page must not wait for an external library before showing
 // local records. This cache is UI-only: conversation queries still read a fresh
 // snapshot. Invalidations discard both cached and in-flight results.
-export function createMemoryListLoader({getProvider,changed,now=Date.now,maxAgeMs=30000}){
+export function createMemoryListLoader({getProvider,changed,now=Date.now,maxAgeMs=30000,retryMs=3000}){
   const snapshots=new Map();let generation=0,lastProvider;
-  const invalidate=()=>{generation++;snapshots.clear();};
+  const invalidate=()=>{
+    generation++;
+    for(const item of snapshots.values())clearTimeout(item.retryTimer);
+    snapshots.clear();
+  };
   const load=(local,session)=>{
     const provider=getProvider();
     if(provider!==lastProvider){invalidate();lastProvider=provider;}
     if(!provider||provider.protocol!=='dsh-memory/v1')return {...local,knowledge:{state:'standalone'}};
     const key=session??null;
     let item=snapshots.get(key);
-    if(item&&item.state!=='loading'&&now()-item.completedAt>=maxAgeMs){snapshots.delete(key);item=null;}
+    if(item&&(item.retryReady||(item.state==='unavailable'&&now()-item.completedAt>=maxAgeMs))){
+      snapshots.delete(key);
+      item=null;
+    }
     if(!item){
       // Bound retained UI data when many chats are opened in one Host lifetime.
-      if(snapshots.size>=8)snapshots.delete(snapshots.keys().next().value);
-      item={state:'loading'};snapshots.set(key,item);const epoch=generation;
+      if(snapshots.size>=8){
+        const oldest=snapshots.keys().next().value;
+        clearTimeout(snapshots.get(oldest).retryTimer);
+        snapshots.delete(oldest);
+      }
+      item={state:'loading'};snapshots.set(key,item);
+    }
+    // Expiry refreshes a previously verified snapshot in the background.
+    // Provider events still discard it immediately via invalidate().
+    if(!item.refreshing&&(item.state==='loading'||(item.state==='connected'&&now()-item.completedAt>=maxAgeMs))){
+      item.refreshing=true;
+      const epoch=generation;
       Promise.resolve().then(()=>provider.snapshot({session,purpose:'memory-management'})).then(snapshot=>{
         if(snapshot.protocol!=='dsh-memory/v1'||snapshot.complete!==true||!Array.isArray(snapshot.entries))throw Error('incomplete_memory_snapshot');
         if(epoch!==generation||snapshots.get(key)!==item)return;
+        item.refreshing=false;
         item.state='connected';item.entries=snapshot.entries;item.completedAt=now();changed();
       }).catch(error=>{
         if(epoch!==generation||snapshots.get(key)!==item)return;
-        item.state='unavailable';item.error=error.message;item.completedAt=now();changed();
+        item.refreshing=false;
+        delete item.entries;
+        if(error?.code==='HOST_UNAVAILABLE'||error?.code==='STATE_BUSY'){
+          item.state='reconnecting';
+          // A provider event invalidates this wait immediately. The timer only
+          // wakes the page's existing refresh loop if that notification is lost.
+          item.retryTimer=setTimeout(()=>{
+            if(epoch!==generation||snapshots.get(key)!==item)return;
+            item.retryReady=true;
+            changed();
+          },retryMs);
+          item.retryTimer.unref?.();
+        }else{
+          item.state='unavailable';
+          item.error=error.message;
+          item.completedAt=now();
+        }
+        changed();
       });
     }
     return item.state==='connected'?{...local,entries:[...local.entries,...item.entries],knowledge:{state:'connected',count:item.entries.length}}:
