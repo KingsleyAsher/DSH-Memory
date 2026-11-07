@@ -20,6 +20,13 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
     catch { windowId = crypto.randomUUID(); }
     let navigation = Promise.resolve();
     let activeSessionId;
+    const knowledgeErrors = new Map([
+      ['knowledge_memory_session_unavailable','当前会话暂时无法关联知识库，已显示本地记忆。'],
+      ['knowledge_memory_library_disconnected','当前会话绑定的知识库已断开，已显示本地记忆。'],
+      ['knowledge_memory_snapshot_incomplete','知识库未返回完整的联动记忆，已显示本地记忆。'],
+      ['knowledge_memory_source_unavailable','知识库中的记忆来源暂时无法读取，已显示本地记忆。'],
+      ['knowledge_memory_binding_changed','知识库连接或权限刚刚变更，已显示本地记忆。'],
+    ]);
     async function api(op, args = {}) {
       const response = await fetch('/api/dsh-memory', { method: 'POST', credentials: 'same-origin', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ op, args: { window_id: windowId, knowledge_session: activeSessionId, ...args } }) });
       const value = await response.json();
@@ -272,7 +279,7 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
           e('button',{className:'dm-btn',type:'submit'},'接受并保存'),e('button',{className:'dm-btn',type:'button',onClick:async()=>{try{await api('review',{candidate_id:item.id,accept:false});await refresh();}catch(err){setError(err.message);}}},'拒绝'))):e('p',{className:'dm-empty'},'没有需要确认的记忆。明确记忆会自动收录。')),
         loading && e('p',{className:'dm-status',role:'status'},'正在加载记忆…'),
         !loading && data.knowledge?.state==='loading' && e('p',{className:'dm-status',role:'status'},'正在加载联动记忆…'),
-        !loading && data.knowledge?.state==='unavailable' && e('p',{className:'dm-error',role:'status'},'联动记忆暂时不可用，已显示本地记忆。'),
+        !loading && data.knowledge?.state==='unavailable' && e('p',{className:'dm-error',role:'status'},knowledgeErrors.get(data.knowledge.error) ?? '联动记忆暂时不可用，已显示本地记忆。'),
         !loading && view==='graph' && e(NebulaView,{entries:data.entries,onAdd:()=>{setDraftScope(data.project?'project':'global');setOpen(true);}}),
         e('div', { className: 'dm-toolbar',hidden:view!=='list' }, e('div', { className: 'dm-tabs', role: 'group', 'aria-label': '查看记忆范围' }, ['global', 'project'].map(v => tab(v))), e('input', { className: 'dm-search', type: 'search', 'aria-label': '搜索记忆', placeholder: '搜索记忆', value: search, onChange: ev => setSearch(ev.target.value) })),
         e('div', { className: 'dm-scope-note',hidden:view!=='list' }, e('span', null, scope === 'global' ? '全局记忆 · 所有 Agent 预设共享，跨项目可用。' : data.project ? '当前项目：' + data.project + ' · 随项目激活，切换预设或项目不会删除。' : '尚未选择项目。进入项目后可以添加项目记忆。'), scope === 'project' && data.project && e('button', { className: 'dm-link', onClick: () => setClear(true) }, '清理项目记忆')),

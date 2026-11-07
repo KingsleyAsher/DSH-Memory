@@ -18,7 +18,7 @@ export function createMemoryListLoader({getProvider,changed,now=Date.now,maxAgeM
       // Bound retained UI data when many chats are opened in one Host lifetime.
       if(snapshots.size>=8)snapshots.delete(snapshots.keys().next().value);
       item={state:'loading'};snapshots.set(key,item);const epoch=generation;
-      Promise.resolve().then(()=>provider.snapshot({session})).then(snapshot=>{
+      Promise.resolve().then(()=>provider.snapshot({session,purpose:'memory-management'})).then(snapshot=>{
         if(snapshot.protocol!=='dsh-memory/v1'||snapshot.complete!==true||!Array.isArray(snapshot.entries))throw Error('incomplete_memory_snapshot');
         if(epoch!==generation||snapshots.get(key)!==item)return;
         item.state='connected';item.entries=snapshot.entries;item.completedAt=now();changed();

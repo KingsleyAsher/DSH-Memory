@@ -1,5 +1,3 @@
-# DSH Memory 1.0.11
+# DSH Memory 1.0.12
 
-Remove the dedicated DSH Memory Agent preset accidentally shipped in 1.0.10. The global memory plugin serves eligible ordinary presets and respects pure mode and explicit memory opt-outs. The Memory page remains available to manage stored records.
-
-Retains 1.0.10 host compatibility. Isolated tests use ordinary presets on DSH 0.2.1-rc.5 and 0.2.2-rc.1 and cover the tool loop, persistence, same-call compaction, cross-session recall and recovery with offline model fixtures. Fully exit the desktop app including the tray process and reopen after updating.
+Memory management now loads linked memories for historical sessions using their stored library ownership. If the bound library is disconnected, the page shows the reason and keeps local entries visible. Pair with the Knowledge Base plugin 2.5.6.

@@ -1,11 +1,11 @@
 {
-  "version": "1.0.11",
+  "version": "1.0.12",
   "package": "@local/dsh-memory",
-  "archive": "dist/local-dsh-memory-1.0.11.tgz",
-  "tgz": "local-dsh-memory-1.0.11.tgz",
-  "buildId": "0647b4283bdf9c20",
-  "sha256": "5f5bab70708c372f6820704e6c5e8642493c8095c73ab0fb26c0c4a7981c287b",
-  "bytes": 300311,
+  "archive": "dist/local-dsh-memory-1.0.12.tgz",
+  "tgz": "local-dsh-memory-1.0.12.tgz",
+  "buildId": "44fc0721108d3391",
+  "sha256": "5407605d57e9d88e8150a3a573ba1cd25b7abdcbdf49357629a1b85f4ab0ce29",
+  "bytes": 300426,
   "files": 77,
   "verification": {
     "syntheticTestsPassed": 16,
@@ -21,44 +21,6 @@
     "failedSubmissionRetryPassed": true,
     "pureExclusionPassed": true,
     "conversationIsolationPassed": true,
-    "nonBlockingMemoryListPassed": true,
-    "hostRuntimeMatrix": [
-      {
-        "hostVersion": "0.2.1-rc.5",
-        "cordisVersion": "4.0.5",
-        "passed": 9,
-        "checks": [
-          "global_memory_with_ordinary_preset",
-          "real_loop_proactive_submission",
-          "persistent_core_write",
-          "one_call_compaction_gap_fill_and_durable_checkpoint",
-          "cross_session_automatic_recall",
-          "workspace_isolation",
-          "exit_restart_and_same_workspace_backlog_resume",
-          "foreign_session_submission_rejected",
-          "worker_crash_auto_restart_preserves_memory_and_backlog"
-        ],
-        "fixture_stream_calls": 4,
-        "external_model_calls": 0
-      },
-      {
-        "hostVersion": "0.2.2-rc.1",
-        "cordisVersion": "4.1.0",
-        "passed": 9,
-        "checks": [
-          "global_memory_with_ordinary_preset",
-          "real_loop_proactive_submission",
-          "persistent_core_write",
-          "one_call_compaction_gap_fill_and_durable_checkpoint",
-          "cross_session_automatic_recall",
-          "workspace_isolation",
-          "exit_restart_and_same_workspace_backlog_resume",
-          "foreign_session_submission_rejected",
-          "worker_crash_auto_restart_preserves_memory_and_backlog"
-        ],
-        "fixture_stream_calls": 4,
-        "external_model_calls": 0
-      }
-    ]
+    "nonBlockingMemoryListPassed": true
   }
 }
