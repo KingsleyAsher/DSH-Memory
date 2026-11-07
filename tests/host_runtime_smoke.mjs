@@ -25,6 +25,9 @@ const {default:Meter}=await load('@deepseek-ai/dsh-token-meter');
 const {default:Loader, Group }=await load('@deepseek-ai/cordis-plugin-loader');
 const {default:Presets}=await load('@deepseek-ai/dsh-agent-preset-registry');
 const {default:MemoryStore}=await load('@local/dsh-memory/store');
+const autoMemory=await load('@local/dsh-memory');
+const shippedPatch=await readFile(resolve(hostRoot,'node_modules/@local/dsh-memory/cordis.patch.yml'),'utf8');
+assert.ok(!shippedPatch.includes('@deepseek-ai/dsh-agent-preset'), 'the published bundle must not create a dedicated Agent');
 let NativeExecutor;
 try{NativeExecutor=await load('@deepseek-ai/dsh-tool-executor-native');}
 catch(error){if(error.code!=='MODULE_NOT_FOUND')throw error;}
@@ -75,18 +78,18 @@ class FixtureAdapter extends LlmAdapter {
 }
 ctx.llm.registerAdapter(['fixture-only'], new FixtureAdapter());
 ctx.plugin(Loader, { baseUrl: import.meta.url });
-ctx.plugin(Presets, { default: 'memory-beta' });
+ctx.plugin(Presets, { default: 'ordinary-fixture' });
 await new Promise(setImmediate);
 ctx.loader.builtins.group = Group;
 ctx.plugin(MemoryStore, { stateDir: home, python: 'python' });
-const declaration={id:'preset-memory-beta',name:'@deepseek-ai/dsh-agent-preset',config:{id:'memory-beta',name:'Synthetic memory test',plugins:[{id:'memory-beta-compaction',name:'cordis:group',group:true,isolate:{compaction:true},config:[{id:'memory-beta-core',name:'@local/dsh-memory/runtime'}]}]}};
-declaration.config.plugins[0].config[0].name = '@local/dsh-memory/runtime';
-declaration.config.plugins[0].config[0].config = { stateDir: home, python: 'python', compaction: { auto: false, headroomTokens: 128, maxTokens: 8192, retainTokens: 256 } };
+ctx.plugin(autoMemory);
+const declaration={id:'preset-memory-beta',name:'@deepseek-ai/dsh-agent-preset',config:{id:'ordinary-fixture',name:'Synthetic memory test',plugins:[{id:'memory-beta-compaction',name:'cordis:group',group:true,isolate:{compaction:true},config:[{id:'memory-beta-core',name:'@deepseek-ai/dsh-compaction-basic'}]}]}};
+declaration.config.plugins[0].config[0].config = { auto: false, headroomTokens: 128, maxTokens: 8192, retainTokens: 256 };
 await ctx.loader.create(declaration);
 await ctx.loader.await();
 assert.ok(!(await ctx.agentPresets.list())[0].broken, JSON.stringify(await ctx.agentPresets.list()));
-checks.push('packaged_opt_in_preset_real_loader_activation');
-const setup = async scope => { await ctx.agentPresets.mount(scope, 'memory-beta'); };
+checks.push('global_memory_with_ordinary_preset');
+const setup = async scope => { await ctx.agentPresets.mount(scope, 'ordinary-fixture'); };
 let first, second; const bridge = new CoreBridge({ home, python: 'python', coreRoot: resolve('.') });
 try {
   first = await ctx.agents.create({ sessionId: 'beta-first', meta: { cwd: resolve(fixtureRoot,'workspace') }, agentOptions: { provider: 'fixture-only', model: 'fixture' }, setup });

@@ -27,6 +27,8 @@ def main():
                 files[prefix+'/'+p.relative_to(ROOT/directory).as_posix()] = p.read_bytes()
     for name in ['package.json','cordis.patch.yml']:
         files[name] = (ROOT/'plugin'/name).read_bytes()
+    if b'@deepseek-ai/dsh-agent-preset' in files['cordis.patch.yml']:
+        raise ValueError('The memory bundle must not register an Agent preset')
     for p in ROOT.glob('*.md'):
         files[p.name] = p.read_bytes()
     files['LICENSE'] = (ROOT/'LICENSE').read_bytes()
@@ -80,7 +82,7 @@ def main():
         for host in args.test_host:
             package=Path(host)/'node_modules/@local/dsh-memory'
             for name,data in files.items():
-                if name.startswith(('src/','python/')) or name=='package.json':
+                if name.startswith(('src/','python/')) or name in ('package.json','cordis.patch.yml'):
                     assert (package/name).read_bytes().replace(b'\r\n',b'\n')==data, 'Host fixture differs from release: '+name
             result=subprocess.run(['node','tests/host_runtime_smoke.mjs',host],cwd=ROOT,check=True,capture_output=True,text=True)
             matrix.append(json.loads(result.stdout.strip().splitlines()[-1]))

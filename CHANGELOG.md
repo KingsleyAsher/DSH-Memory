@@ -1,5 +1,10 @@
 # Changelog / 版本记录
 
+## 1.0.11 — 2026-11-07
+
+- 移除发布包误带的记忆专用预设，验证普通预设自动挂载记忆。
+- Remove the accidentally bundled dedicated Agent preset and exercise automatic memory with an ordinary preset.
+
 ## 1.0.10 — 2026-11-07
 
 - 兼容 DSH 0.2.1-rc.5 / 0.2.2-rc.1 与 Cordis 4.0.5 / 4.1.0；移除对单一宿主预览版本的精确锁定，保留明确的后续系列上界。
