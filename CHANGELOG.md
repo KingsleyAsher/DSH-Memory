@@ -1,5 +1,10 @@
 # Changelog / 版本记录
 
+## 1.0.12 — 2026-11-07
+
+- 历史会话的记忆管理页使用已保存的知识库归属，联动错误显示具体原因。
+- Route history-session memory management by library ownership and show specific linked-memory errors.
+
 ## 1.0.11 — 2026-11-07
 
 - 移除发布包误带的记忆专用预设，验证普通预设自动挂载记忆。

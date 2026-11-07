@@ -3,7 +3,8 @@ import {createMemoryListLoader} from '../plugin/src/knowledge-memory.js';
 
 let calls=0,updates=0,time=0;
 const pending=[];
-const provider={protocol:'dsh-memory/v1',snapshot:({session})=>{
+const provider={protocol:'dsh-memory/v1',snapshot:({session,purpose})=>{
+  assert.equal(purpose,'memory-management');
   calls++;return new Promise((resolve,reject)=>pending.push({session,resolve,reject}));
 }};
 const loader=createMemoryListLoader({getProvider:()=>provider,changed:()=>updates++,now:()=>time});

@@ -1,8 +1,8 @@
 [
   {
     "path": "CHANGELOG.md",
-    "sha256": "cb8892aca863c5998f03d67b339b8d7d625ec6ce9ba856447afba2d2e9e42700",
-    "bytes": 5240
+    "sha256": "6162563452052c4096deaca0767ec671c99968c9642f02f629eefaebbbf110be",
+    "bytes": 5472
   },
   {
     "path": "GUIDE.en.md",
@@ -36,32 +36,32 @@
   },
   {
     "path": "README.md",
-    "sha256": "22aaa7e26ae126c45af5f2ae1496a28f40904f8c058a689318e10f03c2c8a618",
+    "sha256": "b7efe7f5cdba6bfbfdc611ecffc6dd49ed77653f2ab58d69d81328a9739e05c6",
     "bytes": 10814
   },
   {
     "path": "README.zh-CN.md",
-    "sha256": "dd567ea3df16b21fb3458e20c7a9a5c17189d3987a43dc823b8c0c796e5041e1",
+    "sha256": "88a7034e980c3ab4437e7f65827a686b7d1e64025e9786c2a9d35ff3413fb67b",
     "bytes": 10361
   },
   {
     "path": "RELEASE.en.md",
-    "sha256": "a0654c795000baef3a744203cea5be4693baf49ead047694a555d7edb7bf4cad",
-    "bytes": 578
+    "sha256": "69746d9f324a16f04a246af5ae088b58d5b3dc0bc2022fec6040a75c1d4226a4",
+    "bytes": 267
   },
   {
     "path": "RELEASE.zh-CN.md",
-    "sha256": "1570fed486032c4841828e8192faf05c9643e0cfd8c8a1b86fa17adc3b4203d9",
-    "bytes": 535
+    "sha256": "66c722c163f01c74fc558c5417065ea2dc06efff40179045110522cd85b9243b",
+    "bytes": 230
   },
   {
     "path": "VERSIONING.en.md",
-    "sha256": "713ac24d37c5e35592665dab56fb39be29d2273af47750b04fc7ece9a9995b15",
+    "sha256": "51edba8d1d56331b908bb0c59749957e5cfd3c0410afcca2fd2517fb1f9605c5",
     "bytes": 2137
   },
   {
     "path": "VERSIONING.zh-CN.md",
-    "sha256": "47159a8e1e7257695ca8952499ba28236546c814728e3dc0882b0ea25dba088d",
+    "sha256": "6c53f30cf80b3a43a2259fb1ccf64b37be88968c5daf10bd6bfb48ac3052142c",
     "bytes": 2203
   },
   {
@@ -71,12 +71,12 @@
   },
   {
     "path": "package.json",
-    "sha256": "4b2740d938951e06e4440943850ef81f1b40f25650cc76b53a5911bf751858f0",
+    "sha256": "8ac7c0ccf42329f52588542b62f145da138b765f5b8df780a677b8e8f2d9e3c2",
     "bytes": 1463
   },
   {
     "path": "python/memory_core/__init__.py",
-    "sha256": "ab9257fa6600987cdf5b7148607bdd2d0336ec317c5adc00b4a0fe0e996084fb",
+    "sha256": "be0c4e9aeeb5f5292b44ca4080018dc347020669983c2f0ffd6145af7e6c2b83",
     "bytes": 99
   },
   {
@@ -341,8 +341,8 @@
   },
   {
     "path": "src/client.js",
-    "sha256": "b8171f61bef62a2af0a530308b69840750d07f52f750118ff08c253200395ebc",
-    "bytes": 184336
+    "sha256": "e63ce0d6bf6f01da6cdbda28cf6e7da295e41a323048b5dd04494dab4cfdc17c",
+    "bytes": 185011
   },
   {
     "path": "src/details.js",
@@ -356,8 +356,8 @@
   },
   {
     "path": "src/knowledge-memory.js",
-    "sha256": "33e8b2aa0e68c66499d305932ecc7e70675a5f92111d0cdc5a6b22acaaf39319",
-    "bytes": 5390
+    "sha256": "1fb269407c154f8756f62aafd0c3d160ccc8d41f54ee02201d47a831f43838ee",
+    "bytes": 5418
   },
   {
     "path": "src/runtime.js",
