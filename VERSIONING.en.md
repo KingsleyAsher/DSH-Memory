@@ -10,4 +10,4 @@ Gitee, GitCode and GitHub are checked concurrently. The newest valid release win
 
 DSH owns installation and activation. Use its plugin manager if the remote interface is unavailable. A successful installation is not evidence of model-quality verification.
 
-The current stable version is **1.0.10**. The release manifest identifies the public payload by version, build ID, size and SHA-256. Earlier local candidate bytes are retained separately and are not the public update payload.
+The current stable version is **1.0.11**. The release manifest identifies the public payload by version, build ID, size and SHA-256. Earlier local candidate bytes are retained separately and are not the public update payload.

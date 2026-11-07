@@ -1,11 +1,11 @@
 {
-  "version": "1.0.10",
+  "version": "1.0.11",
   "package": "@local/dsh-memory",
-  "archive": "dist/local-dsh-memory-1.0.10.tgz",
-  "tgz": "local-dsh-memory-1.0.10.tgz",
-  "buildId": "cd1bee7505e1c875",
-  "sha256": "f04e3937272e56ba418dae91b99bfadcee9d543983764ec88d11c2a90b53b5d1",
-  "bytes": 300068,
+  "archive": "dist/local-dsh-memory-1.0.11.tgz",
+  "tgz": "local-dsh-memory-1.0.11.tgz",
+  "buildId": "0647b4283bdf9c20",
+  "sha256": "5f5bab70708c372f6820704e6c5e8642493c8095c73ab0fb26c0c4a7981c287b",
+  "bytes": 300311,
   "files": 77,
   "verification": {
     "syntheticTestsPassed": 16,
@@ -28,7 +28,7 @@
         "cordisVersion": "4.0.5",
         "passed": 9,
         "checks": [
-          "packaged_opt_in_preset_real_loader_activation",
+          "global_memory_with_ordinary_preset",
           "real_loop_proactive_submission",
           "persistent_core_write",
           "one_call_compaction_gap_fill_and_durable_checkpoint",
@@ -46,7 +46,7 @@
         "cordisVersion": "4.1.0",
         "passed": 9,
         "checks": [
-          "packaged_opt_in_preset_real_loader_activation",
+          "global_memory_with_ordinary_preset",
           "real_loop_proactive_submission",
           "persistent_core_write",
           "one_call_compaction_gap_fill_and_durable_checkpoint",

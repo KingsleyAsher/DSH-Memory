@@ -1,8 +1,8 @@
 [
   {
     "path": "CHANGELOG.md",
-    "sha256": "efb99b3ab37c7934b55faa79e78d64d81936fc42241a3f17767b877354c6aa53",
-    "bytes": 5014
+    "sha256": "cb8892aca863c5998f03d67b339b8d7d625ec6ce9ba856447afba2d2e9e42700",
+    "bytes": 5240
   },
   {
     "path": "GUIDE.en.md",
@@ -36,47 +36,47 @@
   },
   {
     "path": "README.md",
-    "sha256": "282acf4c0960cddba43efc157402a436ae544718ed2112ca0a94257dff22d5c3",
+    "sha256": "22aaa7e26ae126c45af5f2ae1496a28f40904f8c058a689318e10f03c2c8a618",
     "bytes": 10814
   },
   {
     "path": "README.zh-CN.md",
-    "sha256": "60fadf8d5eb58bbd8b1d68079125d2131492cf5277ba8398c445c900def55b7c",
+    "sha256": "dd567ea3df16b21fb3458e20c7a9a5c17189d3987a43dc823b8c0c796e5041e1",
     "bytes": 10361
   },
   {
     "path": "RELEASE.en.md",
-    "sha256": "568ca4f31904c533dfcd634eec96dc23e8edc07c90e30f681e3a3c769a9ce560",
-    "bytes": 1331
+    "sha256": "a0654c795000baef3a744203cea5be4693baf49ead047694a555d7edb7bf4cad",
+    "bytes": 578
   },
   {
     "path": "RELEASE.zh-CN.md",
-    "sha256": "a785a26e983d4ac7d20238f1cc0f00ce3670f2d993d64907c6dcbe910d897055",
-    "bytes": 1271
+    "sha256": "1570fed486032c4841828e8192faf05c9643e0cfd8c8a1b86fa17adc3b4203d9",
+    "bytes": 535
   },
   {
     "path": "VERSIONING.en.md",
-    "sha256": "81ed7c8c0188fad42a16a85aaa83360d25c53e7389c2504d6f127f4d062869ec",
+    "sha256": "713ac24d37c5e35592665dab56fb39be29d2273af47750b04fc7ece9a9995b15",
     "bytes": 2137
   },
   {
     "path": "VERSIONING.zh-CN.md",
-    "sha256": "14d0f10533bade825595750610530cec9091d3d127c11ab8a7849f68f2a72589",
+    "sha256": "47159a8e1e7257695ca8952499ba28236546c814728e3dc0882b0ea25dba088d",
     "bytes": 2203
   },
   {
     "path": "cordis.patch.yml",
-    "sha256": "4e0ccf79b7825da3a5b250786e677de9c068cdcd9e590d58f03debc242993285",
-    "bytes": 776
+    "sha256": "a02d126ebd510d66069f4eb8a10b009bec37ebe0ed184d2acf708abaf7631b72",
+    "bytes": 202
   },
   {
     "path": "package.json",
-    "sha256": "27c0cdfcbc48c1b33a3a9e59a274f076f8f22534f42d6b2b7f8cc63124911da0",
+    "sha256": "4b2740d938951e06e4440943850ef81f1b40f25650cc76b53a5911bf751858f0",
     "bytes": 1463
   },
   {
     "path": "python/memory_core/__init__.py",
-    "sha256": "f72e8be5170cd8ee058a5c1fb7cb29d9fab0f6864287970876ccad4175d7547b",
+    "sha256": "ab9257fa6600987cdf5b7148607bdd2d0336ec317c5adc00b4a0fe0e996084fb",
     "bytes": 99
   },
   {
