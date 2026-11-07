@@ -20,6 +20,8 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
     catch { windowId = crypto.randomUUID(); }
     let navigation = Promise.resolve();
     let activeSessionId;
+    let lastMemoryList;
+    let supportsListDelta=false;
     const knowledgeErrors = new Map([
       ['knowledge_memory_session_unavailable','当前会话暂时无法关联知识库，已显示本地记忆。'],
       ['knowledge_memory_library_disconnected','当前会话绑定的知识库已断开，已显示本地记忆。'],
@@ -33,7 +35,7 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
       if (!response.ok) throw new Error(value.error || '记忆服务暂不可用');
       return value;
     }
-    function changed() { window.dispatchEvent(new Event('dsh-memory:changed')); }
+    function navigationChanged() { window.dispatchEvent(new Event('dsh-memory:navigation')); }
     function installLifecycle(ctx) {
       return ctx.inject(['sessions', 'workspaces'], scope => {
         let lastKey; let lastWorkspace; let active;
@@ -44,7 +46,7 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
           if (!entry) {
             if (active) {
               active = null; activeSessionId = undefined; lastKey = null;
-              navigation = navigation.catch(() => {}).then(() => api('activate', { project: null })).then(changed).catch(console.warn);
+              navigation = navigation.catch(() => {}).then(() => api('activate', { project: null })).then(navigationChanged).catch(console.warn);
             }
             return;
           }
@@ -57,7 +59,7 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
           active = { project, session_id: id }; lastKey = key; lastWorkspace = identity;
           activeSessionId = id;
           const next = { ...active, clear };
-          navigation = navigation.catch(() => {}).then(() => api('activate', next)).then(changed).catch(console.warn);
+          navigation = navigation.catch(() => {}).then(() => api('activate', next)).then(navigationChanged).catch(console.warn);
         };
         scope.effect(() => {
           const a = scope.sessions.list.subscribe(inspect); const b = scope.workspaces.list.subscribe(inspect); inspect();
@@ -209,31 +211,88 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
       const [deleting, setDeleting] = R.useState(null); const [clear, setClear] = R.useState(false);
       const input = R.useRef(null); const addButton = R.useRef(null); const requestId = R.useRef(null);
       const refreshTask=R.useRef(null);
+      const refreshPending=R.useRef(false);
+      const refreshFailed=R.useRef(false);
       const refresh = R.useCallback(async () => {
-        if(refreshTask.current)return refreshTask.current;
+        if(refreshTask.current){refreshPending.current=true;return refreshTask.current;}
         const task=(async()=>{
-          try { await navigation; const result = await api('list'); setData(previous=>JSON.stringify(previous)===JSON.stringify(result)?previous:result);setLoading(false); if(!result.project)setScope('global'); const pending=await api('reviews');setReviews(pending.candidates);setError(''); }
-          catch (err) { setLoading(false);setError(err.message); }
+          try {
+            let pendingNavigation;
+            do {
+              refreshPending.current=false;
+              pendingNavigation=navigation;
+              await pendingNavigation;
+              if(pendingNavigation!==navigation)continue;
+              const session=activeSessionId;
+              const cached=lastMemoryList&&lastMemoryList.session===session?lastMemoryList.data:undefined;
+              const deltaArgs=supportsListDelta?{list_delta:true,list_cursor:cached?.cursor}:{};
+              const response=await api('list',{...deltaArgs,knowledge_session:session});
+              if(pendingNavigation!==navigation)continue;
+              let result=response;
+              if(response.unchanged)result=cached;
+              if(response.delta){
+                const entriesById=new Map(cached.entries.map(entry=>[entry.id,entry]));
+                for(const id of response.delta.removed)entriesById.delete(id);
+                for(const entry of response.delta.upsert)entriesById.set(entry.id,entry);
+                const entries=response.delta.order
+                  ? response.delta.order.map(id=>entriesById.get(id))
+                  : [...entriesById.values()];
+                result={project:response.project,knowledge:response.knowledge,cursor:response.cursor,entries};
+              }
+              lastMemoryList={session,data:result};
+              setData(result);setLoading(false);
+              if(!result.project)setScope('global');
+              const pending=await api('reviews');
+              if(pendingNavigation===navigation){
+                refreshFailed.current=false;setReviews(pending.candidates);setError('');
+              }
+            }while(refreshPending.current||pendingNavigation!==navigation);
+          }
+          catch (err) { refreshFailed.current=true;setLoading(false);setError(err.message); }
         })();
         refreshTask.current=task;
         try{await task;}finally{refreshTask.current=null;}
       }, []);
       R.useEffect(() => {
-        let stopped=false,running=false,revision;
+        let stopped=false,running=false,revision,connected=false,timer,startupTimer;
+        const applyRevision=next=>{
+          supportsListDelta=next.listDelta===true;
+          if(next.revision===revision&&!refreshFailed.current)return;
+          revision=next.revision;
+          void refresh();
+        };
         const check=async()=>{
-          if(stopped||running||document.hidden||refreshTask.current)return;
+          if(stopped||running||connected||document.hidden)return;
           running=true;
           try{
             const next=await api('revision');
-            if(!stopped&&!refreshTask.current&&next.revision!==revision){
-              revision=next.revision;
-              await refresh();
-            }
-          }catch(err){if(!stopped)setError(err.message)}finally{running=false}
+            if(!stopped&&!connected)applyRevision(next);
+          }catch(err){if(!stopped&&!connected)setError(err.message)}finally{running=false}
         };
-        void check();window.addEventListener('dsh-memory:changed',refresh);window.addEventListener('focus',check);
-        const timer=setInterval(check,1000),fallback=setInterval(refresh,30000);
-        return()=>{stopped=true;clearInterval(timer);clearInterval(fallback);window.removeEventListener('dsh-memory:changed',refresh);window.removeEventListener('focus',check)};
+        const startFallback=()=>{
+          clearTimeout(startupTimer);
+          if(timer)return;
+          timer=setInterval(check,1000);void check();
+        };
+        const events=typeof EventSource==='function'?new EventSource('/api/dsh-memory'):null;
+        if(events){
+          events.onmessage=event=>{
+            if(stopped)return;
+            connected=true;clearTimeout(startupTimer);clearInterval(timer);timer=undefined;
+            applyRevision(JSON.parse(event.data));
+          };
+          events.onerror=()=>{
+            if(stopped)return;
+            connected=false;startFallback();
+          };
+          startupTimer=setTimeout(startFallback,1000);
+        }else startFallback();
+        const focus=()=>{if(timer)void check();else if(refreshFailed.current)void refresh();};
+        window.addEventListener('dsh-memory:navigation',refresh);window.addEventListener('focus',focus);
+        return()=>{
+          stopped=true;events?.close();clearTimeout(startupTimer);clearInterval(timer);
+          window.removeEventListener('dsh-memory:navigation',refresh);window.removeEventListener('focus',focus);
+        };
       },[refresh]);
       R.useEffect(() => { if (open) { input.current?.focus(); return () => addButton.current?.focus(); } }, [open]);
       const label = value => value === 'global' ? '全局记忆' : '项目记忆';
@@ -244,19 +303,19 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
         try {
           await navigation;
           requestId.current ||= crypto.randomUUID();
-          const result = await api('add', { scope: draftScope, title, text, request_id: requestId.current });
-          setData(d => ({ ...d, entries: result.entries })); setScope(draftScope); setOpen(false); setTitle(''); setText(''); requestId.current = null;
-          setNotice('已保存到' + label(draftScope)); changed();
+          await api('add', { scope: draftScope, title, text, request_id: requestId.current, list_delta: supportsListDelta||undefined });
+          setScope(draftScope); setOpen(false); setTitle(''); setText(''); requestId.current = null;
+          setNotice('已保存到' + label(draftScope));
         } catch (err) { setError(err.message); } finally { setBusy(false); }
       };
       const remove = async id => {
         setBusy(true); setError('');
-        try { await api('remove', { entry_id: id }); setDeleting(null); await refresh(); changed(); }
+        try { await api('remove', { entry_id: id }); setDeleting(null); }
         catch (err) { setError(err.message); } finally { setBusy(false); }
       };
       const clearProject = async () => {
         setBusy(true); setError('');
-        try { await api('activate', { project: data.project, session_id: activeSessionId, clear: true }); setClear(false); await refresh(); changed(); }
+        try { await api('activate', { project: data.project, session_id: activeSessionId, clear: true }); setClear(false); }
         catch (err) { setError(err.message); } finally { setBusy(false); }
       };
       const tab = (value, editing = false) => e('button', { type: 'button', key: value, className: 'dm-tab', 'aria-pressed': (editing ? draftScope : scope) === value,
@@ -283,10 +342,10 @@ body[data-ds-dark-theme] .dsh-memory{--dm-bg:var(--dsw-alias-bg-base,#171a21);--
           e('button', { ref: addButton, className: 'dm-btn dm-btn-primary', onClick: () => { setDraftScope(scope === 'project' && !data.project ? 'global' : scope); setError(''); setOpen(true); } }, '＋ 新增记忆')),
         e('div',{className:'dm-tabs','aria-label':'记忆视图'},['graph','list','review','details'].map(v=>e('button',{key:v,className:'dm-tab','aria-pressed':view===v,onClick:()=>setView(v)},v==='graph'?'关系网':v==='list'?'全部条目':v==='details'?'详情':'待确认 ('+reviews.length+')'))),
         view==='details' && e(PluginDetails),
-        view==='review' && e('div',{className:'dm-list'},reviews.length?reviews.map(item=>e('form',{key:item.id,className:'dm-item',onSubmit:async ev=>{ev.preventDefault();const text=new FormData(ev.currentTarget).get('text');try{await api('review',{candidate_id:item.id,accept:true,text});await refresh();changed();}catch(err){setError(err.message);}}},
+        view==='review' && e('div',{className:'dm-list'},reviews.length?reviews.map(item=>e('form',{key:item.id,className:'dm-item',onSubmit:async ev=>{ev.preventDefault();const text=new FormData(ev.currentTarget).get('text');try{await api('review',{candidate_id:item.id,accept:true,text});}catch(err){setError(err.message);}}},
           e('strong',null,item.title),e('span',{className:'dm-badge'},label(item.scope)),e('p',null,'需要确认：'+item.reason),e('p',null,'用户原话：'+item.quote),
           e('textarea',{name:'text',className:'dm-textarea',defaultValue:item.body,required:true,maxLength:4000,'aria-label':'候选记忆内容'}),
-          e('button',{className:'dm-btn',type:'submit'},'接受并保存'),e('button',{className:'dm-btn',type:'button',onClick:async()=>{try{await api('review',{candidate_id:item.id,accept:false});await refresh();}catch(err){setError(err.message);}}},'拒绝'))):e('p',{className:'dm-empty'},'没有需要确认的记忆。明确记忆会自动收录。')),
+          e('button',{className:'dm-btn',type:'submit'},'接受并保存'),e('button',{className:'dm-btn',type:'button',onClick:async()=>{try{await api('review',{candidate_id:item.id,accept:false});}catch(err){setError(err.message);}}},'拒绝'))):e('p',{className:'dm-empty'},'没有需要确认的记忆。明确记忆会自动收录。')),
         loading && e('p',{className:'dm-status',role:'status'},'正在加载记忆…'),
         !loading && data.knowledge?.state==='loading' && e('p',{className:'dm-status',role:'status'},'正在加载联动记忆…'),
         !loading && data.knowledge?.state==='reconnecting' && e('p',{className:'dm-status',role:'status'},'知识库服务正在重连，就绪后会自动加载联动记忆。'),

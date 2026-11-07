@@ -73,7 +73,8 @@ class ToolMemory:
         return source
 
     def _context(self,source):
-        rows=self.db.execute('''SELECT payload FROM inbox WHERE session_id=? AND seq<? ORDER BY seq DESC LIMIT 24''',
+        rows=self.db.execute('''SELECT payload FROM inbox WHERE session_id=? AND seq<? AND state!='deleted'
+                             ORDER BY seq DESC LIMIT 24''',
                              (source.get('session_id','default'),source['seq'])).fetchall()
         return [s for r in reversed(rows) if (s:=json.loads(r[0]))['project']==source['project']
                 and s['entity']==source['entity'] and self.store.visible_source(s['id'])]

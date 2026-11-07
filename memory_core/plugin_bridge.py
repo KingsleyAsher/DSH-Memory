@@ -24,7 +24,32 @@ class PluginBridge:
         ''')
         with self.db:self.db.execute("UPDATE plugin_sessions SET state='closed_pending' WHERE state='open'")
         self.scopes=PluginScopes(self)
+        self._track_memory_changes()
         self.startup_recovery=self.recover()
+
+    def _track_memory_changes(self):
+        # Keep notification state connection-local. Existing databases need no migration.
+        self.db.executescript('''
+          CREATE TEMP TABLE memory_change_revision(value INTEGER NOT NULL);
+          INSERT INTO memory_change_revision VALUES(0);
+        ''')
+        for table in ('plugin_memory_entries','plugin_memory_candidates','plugin_chat_style','plugin_windows'):
+            columns=[row[1] for row in self.db.execute(f'PRAGMA table_info({table})')]
+            differs=' OR '.join(f'OLD."{name}" IS NOT NEW."{name}"' for name in columns)
+            for event, condition in [('INSERT',''),('UPDATE',f'WHEN {differs}'),('DELETE','')]:
+                self.db.execute(f'''
+                  CREATE TEMP TRIGGER notify_{table}_{event.lower()} AFTER {event} ON main.{table}
+                  {condition}
+                  BEGIN UPDATE memory_change_revision SET value=value+1; END
+                ''')
+        self.db.execute('''
+          CREATE TEMP TRIGGER notify_project_retirement AFTER UPDATE ON main.plugin_session_scopes
+          WHEN OLD.retired IS NOT NEW.retired OR (OLD.retired=1 AND OLD.scope_key IS NOT NEW.scope_key)
+          BEGIN UPDATE memory_change_revision SET value=value+1; END
+        ''')
+
+    def memory_revision(self):
+        return self.db.execute('SELECT value FROM memory_change_revision').fetchone()[0]
 
     def source_id(self,session,message):return 'dsh-'+sha(session+'\0'+message)[:32]
 
@@ -157,6 +182,7 @@ def main():
             try:
                 request=json.loads(line);result=dict(id=request['id'],result=bridge.dispatch(request))
             except Exception as exc:result=dict(id=request.get('id'),error=dict(type=type(exc).__name__,message=str(exc)[:500]))
+            result['memory_revision']=bridge.memory_revision()
             sys.stdout.buffer.write((json.dumps(result,ensure_ascii=False)+'\n').encode('utf-8'));sys.stdout.buffer.flush()
     finally:bridge.close()
 

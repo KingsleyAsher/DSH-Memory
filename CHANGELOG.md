@@ -1,5 +1,12 @@
 # Changelog / 版本记录
 
+## 1.0.14 — 2026-11-08
+
+- 通过版本化的记忆接口共享全局记录与会话项目档案。记忆页按变更通知更新差异，空闲时复用缓存。
+- 修复删除记录后可能无法再次新增的问题。
+- Add a versioned integration interface and deliver change notifications for incremental Memory page updates.
+- Allow a new entry to be saved after deletion.
+
 ## 1.0.13 — 2026-11-07
 
 - 知识库服务重连后自动重读联动记忆。重开页面时保留上次的结果并后台刷新。

@@ -54,6 +54,8 @@ class PluginScopeTests(unittest.TestCase):
         b.scopes.remove('window-a',first['entries'][0]['id'])
         self.assertFalse(b.scopes.list('window-a')['entries'])
         self.assertFalse(b.dispatch(dict(op='query',args=dict(project='D:/project-a',session='session-a',question='答复习惯？')))['evidence'])
+        replacement=b.scopes.add('window-a','global','答复统一使用中文。','答复',request_id='replacement')
+        self.assertEqual([row['text'] for row in replacement['entries']],['答复统一使用中文。'])
         with self.assertRaisesRegex(ValueError,'no_active_project'):b.scopes.add('unknown-window','project','项目要求。')
 
     def test_project_same_title_override_is_temporary_and_budgeted(self):
